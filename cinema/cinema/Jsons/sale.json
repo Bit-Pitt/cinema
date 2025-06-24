@@ -1,0 +1,62 @@
+[
+    {
+        "nome": "A",
+        "numero_posti": 100,
+        "file": 10,
+        "posti_per_fila": 10
+    },
+    {
+        "nome": "B",
+        "numero_posti": 100,
+        "file": 10,
+        "posti_per_fila": 10
+    },
+    {
+        "nome": "C",
+        "numero_posti": 100,
+        "file": 10,
+        "posti_per_fila": 10
+    },
+    {
+        "nome": "D",
+        "numero_posti": 100,
+        "file": 10,
+        "posti_per_fila": 10
+    },
+    {
+        "nome": "E",
+        "numero_posti": 150,
+        "file": 15,
+        "posti_per_fila": 10
+    },
+    {
+        "nome": "F",
+        "numero_posti": 150,
+        "file": 15,
+        "posti_per_fila": 10
+    },
+    {
+        "nome": "G",
+        "numero_posti": 150,
+        "file": 15,
+        "posti_per_fila": 10
+    },
+    {
+        "nome": "H",
+        "numero_posti": 300,
+        "file": 20,
+        "posti_per_fila": 15
+    },
+    {
+        "nome": "I",
+        "numero_posti": 300,
+        "file": 20,
+        "posti_per_fila": 15
+    },
+    {
+        "nome": "J",
+        "numero_posti": 300,
+        "file": 20,
+        "posti_per_fila": 15
+    }
+]

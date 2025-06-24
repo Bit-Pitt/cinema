@@ -1,0 +1,497 @@
+[
+  {
+    "titolo": "The Shawshank Redemption",
+    "trama": "Un banchiere innocente condannato all'ergastolo nella prigione di Shawshank crea una profonda amicizia e coltiva la speranza della libertà.",
+    "cast": "Tim Robbins, Morgan Freeman, Bob Gunton",
+    "durata": 142,
+    "genere": "Drammatico"
+  },
+  {
+    "titolo": "The Godfather",
+    "trama": "La storia epica della famiglia mafiosa Corleone e del passaggio di potere da Vito al figlio Michael.",
+    "cast": "Marlon Brando, Al Pacino, James Caan",
+    "durata": 175,
+    "genere": "Crime"
+  },
+  {
+    "titolo": "Casablanca",
+    "trama": "Durante la Seconda Guerra Mondiale, un ex amante incontra la sua donna a Casablanca e deve compiere una scelta morale.",
+    "cast": "Humphrey Bogart, Ingrid Bergman, Paul Henreid",
+    "durata": 102,
+    "genere": "Romantico / Drammatico"
+  },
+  {
+    "titolo": "Schindler's List",
+    "trama": "La vera storia di Oskar Schindler, che salvò più di mille ebrei durante l'Olocausto.",
+    "cast": "Liam Neeson, Ben Kingsley, Ralph Fiennes",
+    "durata": 195,
+    "genere": "Storico / Drammatico"
+  },
+  {
+    "titolo": "The Dark Knight",
+    "trama": "Batman affronta il caos incarnato dal Joker a Gotham City.",
+    "cast": "Christian Bale, Heath Ledger, Aaron Eckhart",
+    "durata": 152,
+    "genere": "Supereroi / Thriller"
+  },
+  {
+    "titolo": "12 Angry Men",
+    "trama": "Dodici giurati devono decidere sul destino di un giovane imputato in un'intensa discussione in aula.",
+    "cast": "Henry Fonda, Lee J. Cobb, Martin Balsam",
+    "durata": 96,
+    "genere": "Drammatico / Processo"
+  },
+  {
+    "titolo": "Parasite",
+    "trama": "Una famiglia povera si insinua nella vita di una famiglia ricca, portando a conseguenze imprevedibili.",
+    "cast": "Song Kang-ho, Lee Sun-kyun, Cho Yeo-jeong",
+    "durata": 132,
+    "genere": "Thriller / Drammatico"
+  },
+  {
+    "titolo": "The Lord of the Rings: The Return of the King",
+    "trama": "La conclusione epica della trilogia: la battaglia per la Terra di Mezzo e la distruzione dell'Anello.",
+    "cast": "Elijah Wood, Viggo Mortensen, Ian McKellen",
+    "durata": 201,
+    "genere": "Fantasy"
+  },
+  {
+    "titolo": "Pulp Fiction",
+    "trama": "Storie intrecciate di criminali, boxer e gangster in una Los Angeles surreale.",
+    "cast": "John Travolta, Uma Thurman, Samuel L. Jackson",
+    "durata": 154,
+    "genere": "Crime / Drammatico"
+  },
+  {
+    "titolo": "Spirited Away",
+    "trama": "Una bambina entra in un mondo magico di spiriti per salvare i suoi genitori trasformati in maiali.",
+    "cast": "Rumi Hiiragi, Miyu Irino, Mari Natsuki",
+    "durata": 125,
+    "genere": "Animazione / Fantasy"
+  },
+  {
+    "titolo": "Inception",
+    "trama": "Un ladro esperto in estrazione di segreti dai sogni viene assunto per impiantare un'idea nella mente di un obiettivo.",
+    "cast": "Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page",
+    "durata": 148,
+    "genere": "Sci-Fi / Thriller"
+  },
+  {
+    "titolo": "Fight Club",
+    "trama": "Un impiegato insoddisfatto forma un club sotterraneo di lotta con un venditore di sapone carismatico.",
+    "cast": "Brad Pitt, Edward Norton, Helena Bonham Carter",
+    "durata": 139,
+    "genere": "Drammatico / Psicologico"
+  },
+  {
+    "titolo": "Forrest Gump",
+    "trama": "La straordinaria vita di un uomo con un basso quoziente intellettivo che assiste a eventi storici americani.",
+    "cast": "Tom Hanks, Robin Wright, Gary Sinise",
+    "durata": 142,
+    "genere": "Drammatico / Romantico"
+  },
+  {
+    "titolo": "The Matrix",
+    "trama": "Un hacker scopre la verità su una realtà simulata controllata da macchine intelligenti.",
+    "cast": "Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss",
+    "durata": 136,
+    "genere": "Azione / Fantascienza"
+  },
+  {
+    "titolo": "Interstellar",
+    "trama": "Un gruppo di astronauti viaggia attraverso un wormhole alla ricerca di una nuova casa per l'umanità.",
+    "cast": "Matthew McConaughey, Anne Hathaway, Jessica Chastain",
+    "durata": 169,
+    "genere": "Fantascienza / Drammatico"
+  },
+  {
+    "titolo": "The Silence of the Lambs",
+    "trama": "Una giovane agente dell'FBI cerca l'aiuto di un brillante ma folle psichiatra per catturare un serial killer.",
+    "cast": "Jodie Foster, Anthony Hopkins, Scott Glenn",
+    "durata": 118,
+    "genere": "Thriller / Horror"
+  },
+  {
+    "titolo": "Gladiator",
+    "trama": "Un generale romano viene tradito e ridotto in schiavitù, e cerca vendetta come gladiatore.",
+    "cast": "Russell Crowe, Joaquin Phoenix, Connie Nielsen",
+    "durata": 155,
+    "genere": "Storico / Azione"
+  },
+  {
+    "titolo": "The Green Mile",
+    "trama": "La vita di una guardia carceraria cambia per sempre dopo l'incontro con un detenuto dai poteri miracolosi.",
+    "cast": "Tom Hanks, Michael Clarke Duncan, David Morse",
+    "durata": 189,
+    "genere": "Drammatico / Fantasy"
+  },
+  {
+    "titolo": "Whiplash",
+    "trama": "Un giovane batterista ambizioso affronta un insegnante spietato alla ricerca della perfezione musicale.",
+    "cast": "Miles Teller, J.K. Simmons, Paul Reiser",
+    "durata": 106,
+    "genere": "Drammatico / Musicale"
+  },
+  {
+    "titolo": "La La Land",
+    "trama": "Una storia d'amore tra un'aspirante attrice e un musicista jazz a Los Angeles.",
+    "cast": "Ryan Gosling, Emma Stone, John Legend",
+    "durata": 128,
+    "genere": "Romantico / Musicale"
+  },
+  {
+    "titolo": "The Prestige",
+    "trama": "Due illusionisti rivali nell'Inghilterra vittoriana si sfidano in una guerra di inganni e ossessioni.",
+    "cast": "Christian Bale, Hugh Jackman, Scarlett Johansson",
+    "durata": 130,
+    "genere": "Thriller / Drammatico"
+  },
+  {
+    "titolo": "The Social Network",
+    "trama": "La storia della nascita di Facebook e delle controversie legali che seguirono.",
+    "cast": "Jesse Eisenberg, Andrew Garfield, Justin Timberlake",
+    "durata": 120,
+    "genere": "Biografico / Drammatico"
+  },
+  {
+    "titolo": "Joker",
+    "trama": "La discesa nella follia di Arthur Fleck, un comico fallito che diventa il celebre criminale Joker.",
+    "cast": "Joaquin Phoenix, Robert De Niro, Zazie Beetz",
+    "durata": 122,
+    "genere": "Drammatico / Psicologico"
+  },
+  {
+    "titolo": "Coco",
+    "trama": "Un giovane musicista messicano entra nel regno dei morti per scoprire le verità sulla sua famiglia.",
+    "cast": "Anthony Gonzalez, Gael García Bernal, Benjamin Bratt",
+    "durata": 105,
+    "genere": "Animazione / Avventura"
+  },
+  {
+    "titolo": "The Revenant",
+    "trama": "Dopo essere stato attaccato da un orso, un cacciatore lotta per sopravvivere e vendicarsi.",
+    "cast": "Leonardo DiCaprio, Tom Hardy, Domhnall Gleeson",
+    "durata": 156,
+    "genere": "Avventura / Drammatico"
+  },
+  {
+    "titolo": "A Beautiful Mind",
+    "trama": "La vita del geniale matematico John Nash, affetto da schizofrenia paranoide.",
+    "cast": "Russell Crowe, Jennifer Connelly, Ed Harris",
+    "durata": 135,
+    "genere": "Biografico / Drammatico"
+  },
+  {
+    "titolo": "Slumdog Millionaire",
+    "trama": "Un ragazzo di Mumbai partecipa a 'Chi vuol essere milionario?' e rivive la sua vita attraverso ogni domanda.",
+    "cast": "Dev Patel, Freida Pinto, Anil Kapoor",
+    "durata": 120,
+    "genere": "Drammatico / Romantico"
+  },
+  {
+    "titolo": "The Grand Budapest Hotel",
+    "trama": "Le avventure del concierge Gustave e del suo giovane assistente in un famoso hotel europeo.",
+    "cast": "Ralph Fiennes, Tony Revolori, Saoirse Ronan",
+    "durata": 99,
+    "genere": "Commedia / Avventura"
+  },
+  {
+    "titolo": "The Imitation Game",
+    "trama": "La vita di Alan Turing, che decifrò il codice Enigma durante la Seconda Guerra Mondiale.",
+    "cast": "Benedict Cumberbatch, Keira Knightley, Matthew Goode",
+    "durata": 113,
+    "genere": "Biografico / Storico"
+  },
+  {
+    "titolo": "Inside Out",
+    "trama": "Le emozioni di una ragazza si manifestano come personaggi mentre affronta un trasloco e la crescita.",
+    "cast": "Amy Poehler, Phyllis Smith, Richard Kind",
+    "durata": 95,
+    "genere": "Animazione / Drammatico"
+  },
+  {
+    "titolo": "Up",
+    "trama": "Un anziano vedovo parte in un'avventura aerea verso il Sud America con una casa sollevata da palloncini e un giovane boy scout come compagno.",
+    "cast": "Ed Asner, Jordan Nagai, Christopher Plummer",
+    "durata": 96,
+    "genere": "Animazione / Avventura"
+  },
+  {
+    "titolo": "The Departed",
+    "trama": "Un poliziotto sotto copertura e una talpa della mafia si scontrano mentre cercano di smascherarsi a vicenda.",
+    "cast": "Leonardo DiCaprio, Matt Damon, Jack Nicholson",
+    "durata": 151,
+    "genere": "Crime / Thriller"
+  },
+  {
+    "titolo": "Django Unchained",
+    "trama": "Uno schiavo liberato si allea con un cacciatore di taglie per salvare sua moglie da un crudele proprietario terriero.",
+    "cast": "Jamie Foxx, Christoph Waltz, Leonardo DiCaprio",
+    "durata": 165,
+    "genere": "Western / Drammatico"
+  },
+  {
+    "titolo": "WALL·E",
+    "trama": "Un robot solitario pulisce la Terra abbandonata e scopre l'amore con un'altra macchina altamente tecnologica.",
+    "cast": "Ben Burtt, Elissa Knight, Jeff Garlin",
+    "durata": 98,
+    "genere": "Animazione / Fantascienza"
+  },
+  {
+    "titolo": "The Lion King",
+    "trama": "Un giovane leone fugge dal suo regno dopo la morte del padre, ma deve ritornare per reclamare ciò che è suo.",
+    "cast": "Matthew Broderick, Jeremy Irons, James Earl Jones",
+    "durata": 88,
+    "genere": "Animazione / Drammatico"
+  },
+  {
+    "titolo": "Black Swan",
+    "trama": "Una ballerina ossessionata dalla perfezione cade in una spirale psicologica mentre prepara 'Il lago dei cigni'.",
+    "cast": "Natalie Portman, Mila Kunis, Vincent Cassel",
+    "durata": 108,
+    "genere": "Thriller / Psicologico"
+  },
+  {
+    "titolo": "Her",
+    "trama": "Un uomo solitario si innamora di un sistema operativo dotato di intelligenza artificiale.",
+    "cast": "Joaquin Phoenix, Scarlett Johansson, Amy Adams",
+    "durata": 126,
+    "genere": "Romantico / Fantascienza"
+  },
+  {
+    "titolo": "The Truman Show",
+    "trama": "Un uomo scopre che tutta la sua vita è un reality show trasmesso in diretta mondiale.",
+    "cast": "Jim Carrey, Ed Harris, Laura Linney",
+    "durata": 103,
+    "genere": "Drammatico / Fantascienza"
+  },
+  {
+    "titolo": "Requiem for a Dream",
+    "trama": "Quattro persone inseguono i propri sogni, ma cadono vittime delle dipendenze.",
+    "cast": "Ellen Burstyn, Jared Leto, Jennifer Connelly",
+    "durata": 102,
+    "genere": "Drammatico / Psicologico"
+  },
+  {
+    "titolo": "The Iron Giant",
+    "trama": "Un ragazzo fa amicizia con un gigantesco robot alieno in fuga dall'esercito americano.",
+    "cast": "Vin Diesel, Eli Marienthal, Jennifer Aniston",
+    "durata": 86,
+    "genere": "Animazione / Fantascienza"
+  },
+  {
+    "titolo": "Good Will Hunting",
+    "trama": "Un giovane genio autodidatta del MIT combatte i suoi demoni interiori con l'aiuto di uno psicologo.",
+    "cast": "Matt Damon, Robin Williams, Ben Affleck",
+    "durata": 126,
+    "genere": "Drammatico / Psicologico"
+  },
+  {
+    "titolo": "Amélie",
+    "trama": "Una ragazza eccentrica di Montmartre decide di migliorare la vita degli altri mantenendo segreta la propria identità.",
+    "cast": "Audrey Tautou, Mathieu Kassovitz, Rufus",
+    "durata": 122,
+    "genere": "Romantico / Commedia"
+  },
+  {
+    "titolo": "Pan's Labyrinth",
+    "trama": "Durante la Spagna franchista, una bambina scopre un mondo magico inquietante e oscuro.",
+    "cast": "Ivana Baquero, Sergi López, Maribel Verdú",
+    "durata": 118,
+    "genere": "Fantasy / Drammatico"
+  },
+  {
+    "titolo": "The Intouchables",
+    "trama": "Un ricco aristocratico rimasto paralizzato assume come badante un giovane di periferia con un passato difficile.",
+    "cast": "François Cluzet, Omar Sy, Anne Le Ny",
+    "durata": 112,
+    "genere": "Commedia / Drammatico"
+  },
+  {
+    "titolo": "1917",
+    "trama": "Durante la Prima Guerra Mondiale, due soldati britannici devono attraversare il territorio nemico per salvare centinaia di vite.",
+    "cast": "George MacKay, Dean-Charles Chapman, Mark Strong",
+    "durata": 119,
+    "genere": "Guerra / Drammatico"
+  },
+  {
+    "titolo": "Prisoners",
+    "trama": "Due bambine scompaiono e un padre disperato si spinge oltre i limiti della legalità per trovarle.",
+    "cast": "Hugh Jackman, Jake Gyllenhaal, Viola Davis",
+    "durata": 153,
+    "genere": "Thriller / Drammatico"
+  },
+  {
+    "titolo": "The Pianist",
+    "trama": "La vera storia del pianista polacco Władysław Szpilman, sopravvissuto all'Olocausto.",
+    "cast": "Adrien Brody, Thomas Kretschmann, Frank Finlay",
+    "durata": 150,
+    "genere": "Biografico / Storico"
+  },
+  {
+    "titolo": "Dead Poets Society",
+    "trama": "Un insegnante di lettere ispira i suoi studenti a pensare con la propria testa.",
+    "cast": "Robin Williams, Ethan Hawke, Robert Sean Leonard",
+    "durata": 128,
+    "genere": "Drammatico / Ispirazionale"
+  },
+  {
+    "titolo": "No Country for Old Men",
+    "trama": "Un uomo si impossessa di una valigetta piena di soldi dopo un affare di droga finito male, ma viene braccato da un killer spietato.",
+    "cast": "Josh Brolin, Javier Bardem, Tommy Lee Jones",
+    "durata": 122,
+    "genere": "Thriller / Western moderno"
+  },
+  {
+    "titolo": "The Shape of Water",
+    "trama": "Una donna muta sviluppa una connessione emotiva con una creatura anfibia catturata dal governo.",
+    "cast": "Sally Hawkins, Michael Shannon, Octavia Spencer",
+    "durata": 123,
+    "genere": "Fantasy / Romantico"
+  },
+  {
+    "titolo": "Inglourious Basterds",
+    "trama": "Durante la Seconda Guerra Mondiale, un gruppo di soldati ebrei americani organizza un piano per assassinare i leader nazisti.",
+    "cast": "Brad Pitt, Christoph Waltz, Mélanie Laurent",
+    "durata": 153,
+    "genere": "Guerra / Azione"
+  },
+  {
+    "titolo": "La La Land",
+    "trama": "Una musicista jazz e un'aspirante attrice si innamorano cercando di realizzare i propri sogni a Los Angeles.",
+    "cast": "Ryan Gosling, Emma Stone, John Legend",
+    "durata": 128,
+    "genere": "Musical / Romantico"
+  },
+  {
+    "titolo": "Donnie Darko",
+    "trama": "Un adolescente problematico è tormentato da visioni apocalittiche e da un coniglio demoniaco.",
+    "cast": "Jake Gyllenhaal, Jena Malone, Patrick Swayze",
+    "durata": 113,
+    "genere": "Fantascienza / Psicologico"
+  },
+  {
+    "titolo": "The Curious Case of Benjamin Button",
+    "trama": "Un uomo nasce anziano e invecchia al contrario, vivendo una vita al contrario.",
+    "cast": "Brad Pitt, Cate Blanchett, Taraji P. Henson",
+    "durata": 166,
+    "genere": "Drammatico / Fantasy"
+  },
+  {
+    "titolo": "Into the Wild",
+    "trama": "La vera storia di un giovane che abbandona la società per cercare libertà nella natura selvaggia dell'Alaska.",
+    "cast": "Emile Hirsch, Marcia Gay Harden, William Hurt",
+    "durata": 148,
+    "genere": "Biografico / Avventura"
+  },
+  {
+    "titolo": "Moonlight",
+    "trama": "La vita di un giovane afroamericano divisa in tre fasi mentre cerca la propria identità.",
+    "cast": "Mahershala Ali, Trevante Rhodes, Ashton Sanders",
+    "durata": 111,
+    "genere": "Drammatico / Coming-of-age"
+  },
+  {
+    "titolo": "The Theory of Everything",
+    "trama": "La biografia del fisico Stephen Hawking, dalla diagnosi di SLA ai suoi successi scientifici.",
+    "cast": "Eddie Redmayne, Felicity Jones, Charlie Cox",
+    "durata": 123,
+    "genere": "Biografico / Drammatico"
+  },
+  {
+    "titolo": "Whiplash",
+    "trama": "Un giovane batterista si confronta con un insegnante di musica spietato e ossessivo.",
+    "cast": "Miles Teller, J.K. Simmons, Paul Reiser",
+    "durata": 106,
+    "genere": "Drammatico / Musicale"
+  },
+  {
+    "titolo": "Shutter Island",
+    "trama": "Due agenti federali indagano sulla scomparsa di una paziente da un ospedale psichiatrico su un'isola remota.",
+    "cast": "Leonardo DiCaprio, Mark Ruffalo, Ben Kingsley",
+    "durata": 138,
+    "genere": "Thriller / Psicologico"
+  },
+  {
+    "titolo": "Jojo Rabbit",
+    "trama": "Un bambino tedesco durante il nazismo scopre che sua madre nasconde una ragazza ebrea e riceve consigli dal suo amico immaginario: Adolf Hitler.",
+    "cast": "Roman Griffin Davis, Taika Waititi, Scarlett Johansson",
+    "durata": 108,
+    "genere": "Commedia / Guerra / Drammatico"
+  },
+  {
+    "titolo": "The Grand Budapest Hotel",
+    "trama": "Le avventure del concierge di un celebre hotel europeo tra furti d'arte, guerra e caos dinastico.",
+    "cast": "Ralph Fiennes, Tony Revolori, Saoirse Ronan",
+    "durata": 99,
+    "genere": "Commedia / Drammatico"
+  },
+  {
+    "titolo": "A Beautiful Mind",
+    "trama": "La vita del matematico John Nash, tra genio, schizofrenia e redenzione.",
+    "cast": "Russell Crowe, Jennifer Connelly, Ed Harris",
+    "durata": 135,
+    "genere": "Biografico / Drammatico"
+  },
+  {
+    "titolo": "The Social Network",
+    "trama": "La storia della nascita di Facebook e delle battaglie legali che ne seguirono.",
+    "cast": "Jesse Eisenberg, Andrew Garfield, Justin Timberlake",
+    "durata": 120,
+    "genere": "Biografico / Drammatico"
+  },
+  {
+    "titolo": "Blade Runner 2049",
+    "trama": "Un nuovo blade runner scopre un segreto che potrebbe cambiare il destino dell'umanità.",
+    "cast": "Ryan Gosling, Harrison Ford, Ana de Armas",
+    "durata": 164,
+    "genere": "Fantascienza / Azione"
+  },
+  {
+    "titolo": "Room",
+    "trama": "Una giovane donna e suo figlio fuggono da una prigionia durata anni e affrontano il mondo esterno.",
+    "cast": "Brie Larson, Jacob Tremblay, Joan Allen",
+    "durata": 118,
+    "genere": "Drammatico / Psicologico"
+  },
+  {
+    "titolo": "Arrival",
+    "trama": "Una linguista viene reclutata per comunicare con misteriosi alieni atterrati sulla Terra.",
+    "cast": "Amy Adams, Jeremy Renner, Forest Whitaker",
+    "durata": 116,
+    "genere": "Fantascienza / Drammatico"
+  },
+  {
+    "titolo": "The Revenant",
+    "trama": "Un cacciatore gravemente ferito sopravvive nella natura selvaggia e cerca vendetta contro chi l’ha tradito.",
+    "cast": "Leonardo DiCaprio, Tom Hardy, Domhnall Gleeson",
+    "durata": 156,
+    "genere": "Avventura / Drammatico"
+  },
+  {
+    "titolo": "Gravity",
+    "trama": "Due astronauti rimangono bloccati nello spazio dopo la distruzione del loro shuttle.",
+    "cast": "Sandra Bullock, George Clooney",
+    "durata": 91,
+    "genere": "Fantascienza / Thriller"
+  },
+  {
+    "titolo": "Marriage Story",
+    "trama": "Una coppia affronta un difficile divorzio cercando di mantenere l'equilibrio per il figlio.",
+    "cast": "Adam Driver, Scarlett Johansson, Laura Dern",
+    "durata": 137,
+    "genere": "Drammatico / Sentimentale"
+  },
+  {
+    "titolo": "Slumdog Millionaire",
+    "trama": "Un ragazzo dei bassifondi di Mumbai partecipa a un quiz televisivo e racconta la sua incredibile vita.",
+    "cast": "Dev Patel, Freida Pinto, Anil Kapoor",
+    "durata": 120,
+    "genere": "Drammatico / Romantico"
+  }
+]
+
+
+
+
+

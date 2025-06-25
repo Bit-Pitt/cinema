@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<br>
+<h1 class="text-center mb-4">Ora al cinema!</h1>
+
+<div class="row justify-content-center align-items-center">
+    <!-- Carosello -->
+    <div class="col-md-7">
+        <div id="cinemaCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="{% static 'films/godFather.jpg' %}" class="d-block w-100 rounded-5" style="height:400px; object-fit:cover;" alt="Il Padrino">
+                </div>
+                <div class="carousel-item">
+                    <img src="{% static 'films/casaBlanca.jpg' %}" class="d-block w-100 rounded-5" style="height:400px; object-fit:cover;" alt="Casablanca">
+                </div>
+                <div class="carousel-item">
+                    <img src="{% static 'films/schindlerList.jpg' %}" class="d-block w-100 rounded-5" style="height:400px; object-fit:cover;" alt="Schindler's List">
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#cinemaCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#cinemaCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Testo Accanto -->
+    <div class="col-md-5">
+    <div class="p-4 rounded-4 shadow-sm" style="background-color: #ffc107; color: #001f33;">
+        <h2 class="mb-3 fw-semibold">Scopri il meglio del grande schermo</h2>
+        <p class="mb-3">Ogni settimana nuove uscite, eventi speciali e promozioni. Vivi l’esperienza del cinema come non mai, con comfort e spettacolo garantiti.</p>
+        <a href="#" class="btn btn-dark">Prenota ora</a>
+    </div>
+    </div>
+</div>
+
+
+<!-- Film in evidenza -->
+<h2 class="text-white mt-5 mb-3">Film in evidenza</h2>
+<div class="row">
+    {% for film in film_in_evidenza %}
+            <div class="col-md-4 mb-4">
+        <div class="card bg-dark text-white h-100">
+            <a href="{% url 'film:film' film.pk %}">
+                <img src="{% static 'genere/'|add:film.immagine_genere %}" alt="{{ film.titolo }}" class="card-img-top">
+            </a>
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{% url 'film:film' film.pk %}" class="text-warning text-decoration-none">
+                        {{ film.titolo }}
+                    </a>
+                </h5>
+                <p class="card-text text-truncate">{{ film.trama }}</p>
+            </div>
+        </div>
+</div>
+    {% empty %}   <!-- controlla in automatico se la lista / dict / ... è vuota -->
+        <p class="text-white">Nessun film in evidenza disponibile.</p>
+    {% endfor %}
+</div>
+
+<h2 class="text-white mt-5 mb-3">Prossimamente al cinema</h2>
+
+<div id="prossimamenteCarousel" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    {% for gruppo in film_in_uscita %}
+    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+      <div class="row">
+        {% for film in gruppo %}
+                <div class="col-md-4">
+            <div class="card bg-dark text-white mb-3">
+                <a href="{% url 'film:film' film.pk %}">
+                    <img src="{% static 'genere/'|add:film.immagine_genere %}" alt="{{ film.titolo }}" class="card-img-top">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url 'film:film' film.pk %}" class="text-warning text-decoration-none">
+                            {{ film.titolo }}
+                        </a>
+                    </h5>
+                    <p class="card-text text-truncate">{{ film.trama }}</p>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#prossimamenteCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#prossimamenteCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+
+
+{% endblock %}

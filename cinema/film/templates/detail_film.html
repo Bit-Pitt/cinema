@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} {{ object.titolo }} {% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="mb-4 text-white">{{ object.titolo }}</h1>
+    
+    <div class="row">
+        <!-- Immagine poster -->
+        <div class="col-md-4">
+            <img src="{% static 'genere/'|add:immagine_genere %}" alt="Poster di {{ object.titolo }}" class="img-fluid rounded shadow">
+        </div>
+        
+        <!-- Dettagli film -->
+        <div class="col-md-8">
+            <table class="table table-dark table-striped rounded shadow">
+                <tbody>
+                    <tr>
+                        <th scope="row" style="width: 25%;">Genere</th>
+                        <td>{{ object.genere }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Durata</th>
+                        <td>{{ object.durata }} minuti</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Cast</th>
+                        <td>{{ object.cast }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Trama</th>
+                        <td>{{ object.trama }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <a href="{% url 'film:homepage' %}" class="btn btn-warning mt-3">Torna alla Home</a>
+        </div>
+    </div>
+</div>
+
+DA AGGIUNGERE:  
+<br>
+-   Bottone "prenota" che compare magari solo se ha una proiezione questa settimana
+<br> Bottone "commenta" e "vota"  [solo se utente loggato]!
+<br>
+-   informazioni sui rating (immagina una grafico a barre per il rating 1-5)
+<br>
+-   lista commenti sotto
+{% endblock %}

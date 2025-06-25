@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Cerca Film{% endblock %}
+{% block content %}
+<div class="container mt-4">        <!--Qui aggiungo le label + bottone -->
+    <div class="mb-4">
+        <h2 class="text-warning fw-semibold">Esplora la nostra collezione</h2>
+        <p class="text-white">Cerca per titolo, cast o genere e trova il film perfetto per te</p>
+    </div>
+
+    
+    <form method="get" class="row g-3 mb-4">
+        <div class="col-md-4">
+            <label for="titolo" class="form-label text-white">Titolo</label>
+            <input type="text" class="form-control" id="titolo" name="titolo" value="{{ request.GET.titolo }} ">
+        </div>
+        <div class="col-md-4">
+            <label for="cast" class="form-label text-white">Cast</label>
+            <input type="text" class="form-control" id="cast" name="cast" value="{{ request.GET.cast }} ">
+        </div>
+        <div class="col-md-4">
+            <label for="genere" class="form-label text-white">Genere</label>
+            <input type="text" class="form-control" id="genere" name="genere" value="{{ request.GET.genere }} ">
+        </div>
+        <div class="col-12 text-end">
+            <button type="submit" class="btn btn-warning mt-3">Cerca</button>
+        </div>
+    </form>
+
+        <!-- Qui stampo i vari film tramite "card" di bootstrap -->
+        
+    <div class="row">
+        {% for film in film_list %}
+            <div class="col-md-4 mb-4">
+                <div class="card bg-dark text-white h-100">
+                    <img src="{% static 'genere/'|add:film.immagine_genere %}" class="card-img-top">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ film.titolo }}</h5>
+                        <p class="card-text text-truncate">{{ film.trama }}</p>
+                        <a href="{% url 'film:film' film.pk %}" class="btn btn-outline-light">Dettagli</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-white">Siamo spiacenti, non è stato trovato nessun film che rispetti 
+                                i suoi termini di ricerca.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Paginazione -->
+    {% if is_paginated %}
+    <nav>
+        <ul class="pagination justify-content-center">
+
+            {# Link alla pagina precedente #}
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% if request.GET.titolo %}titolo={{ request.GET.titolo }}&{% endif %}
+                                                {% if request.GET.cast %}cast={{ request.GET.cast }}&{% endif %}
+                                                {% if request.GET.genere %}genere={{ request.GET.genere }}&{% endif %}
+                                                page={{ page_obj.previous_page_number }}">«</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">«</span></li>
+            {% endif %}
+
+            {# Link ai numeri di pagina #}
+            {% for num in paginator.page_range %}
+                {% if num == page_obj.number %}
+                    <li class="page-item active" aria-current="page">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% if request.GET.titolo %}titolo={{ request.GET.titolo }}&{% endif %}
+                                                    {% if request.GET.cast %}cast={{ request.GET.cast }}&{% endif %}
+                                                    {% if request.GET.genere %}genere={{ request.GET.genere }}&{% endif %}
+                                                    page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {# Link alla pagina successiva #}
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% if request.GET.titolo %}titolo={{ request.GET.titolo }}&{% endif %}
+                                                {% if request.GET.cast %}cast={{ request.GET.cast }}&{% endif %}
+                                                {% if request.GET.genere %}genere={{ request.GET.genere }}&{% endif %}
+                                                page={{ page_obj.next_page_number }}">»</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">»</span></li>
+            {% endif %}
+
+        </ul>
+    </nav>
+
+{% endif %}
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/autocomplete.js' %}"></script>
+{% endblock %}

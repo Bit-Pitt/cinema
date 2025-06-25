@@ -22,3 +22,6 @@ __pycache__/
 .env
 .venv/
 venv/
+
+# immagini
+*.jpg

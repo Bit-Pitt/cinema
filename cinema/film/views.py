@@ -7,25 +7,17 @@ from .models import Film
 from itertools import islice
 from django.views.generic import DetailView,ListView
 from .utils import *
+import re
+
+# rimuove spazi multipli che non porterebbero a dei match
+def normalizza_spazi(s):
+    return re.sub(r'\s+', ' ', s).strip()
 
 
 #Divide a gruppi di 3 i film, per poterli renderare a gruppi nel DTL
 def chunked(iterable, n):
     iterable = iter(iterable)
     return iter(lambda: list(islice(iterable, n)), [])
-
-def tmp(request):
-    template = "tmp.html"
-    l = [i for i in range(4)]
-    ctx = { 'title' : "ESEMPIO!" , "list": l}
-    return HttpResponse("Ciao")
-    return render(request,template_name=template,context=ctx)
-
-''' Aggiungi link dinamici ai film / Attori di un film!! (questo nel template )
-<a href="https://it.wikipedia.org/w/index.php?search={{ film.titolo|urlencode }}" target="_blank" rel="noopener noreferrer">
-    Cerca su Wikipedia
-</a>
-'''
 
 
 def home(request):
@@ -89,9 +81,9 @@ class CercaFilmView(ListView):
     paginate_by = 6            #mi da la possibilità di implementare facilmente l'impaginazione
 
     def get_queryset(self):
-        titolo = self.request.GET.get("titolo", "").strip()
-        cast = self.request.GET.get("cast", "").strip()
-        genere = self.request.GET.get("genere", "").strip()
+        titolo = normalizza_spazi(self.request.GET.get("titolo", "").strip())
+        cast = normalizza_spazi(self.request.GET.get("cast", "").strip())
+        genere = normalizza_spazi(self.request.GET.get("genere", "").strip())
 
         # Nessun filtro:  (per ora 10 casuali)
         if not titolo and not cast and not genere:

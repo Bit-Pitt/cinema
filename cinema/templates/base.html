@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="it">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Cinema{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font e icone -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- CSS personalizzato -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="d-flex flex-column min-vh-100" style="background-color: #002b49; color: white;">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg" style="background-color: #001f33; padding: 1.2rem 0;">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center text-warning fs-3 fw-semibold" href="{% url 'film:homepage' %}">
+                <i class="bi bi-film me-2" style="font-size: 2rem;"></i> Ciak Cinema
+            </a>
+            <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav gap-3 fs-5">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'film:cerca_film' %}">Cerca Film</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">Prenota</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">Abbonati</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">Contatti</a>
+                    </li>
+                    <!-- Qui la logica che riguarda il campo utente (se loggato/silver/gold)-->
+                    {% if user.is_authenticated %}
+                    {% with user.profiloutente.abbonamento as abbonamento %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center"
+                            href="#" role="button" data-bs-toggle="dropdown"
+                            style="color:
+                                {% if abbonamento == 'gold' %}
+                                    gold
+                                {% elif abbonamento == 'silver' %}
+                                    silver
+                                {% else %}
+                                    white
+                                {% endif %}
+                            ">
+                                <i class="bi bi-person-circle fs-4 me-1"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <span class="dropdown-item-text text-muted">
+                                        {% if abbonamento == 'gold' %}
+                                            Utente Gold
+                                        {% elif abbonamento == 'silver' %}
+                                            Utente Silver
+                                        {% else %}
+                                            Utente Basic
+                                        {% endif %}
+                                    </span>
+                                </li>
+                                <li><a class="dropdown-item" href="#">Profilo</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>        <!-- utilizzo del metodo post per sicurezza -->
+                                <form method="post" action="{% url 'utenti:logout' %}" style="margin: 0; padding: 0;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item text-danger" style="width: 100%; text-align: left;">
+                                    Logout
+                                    </button>
+                                </form>
+                                </li>
+                            </ul>
+                        </li>
+                    {% endwith %}
+                {% else %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle fs-4 me-1"></i> Account
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'utenti:login' %}">Login</a></li>
+                            <li><a class="dropdown-item" href="{% url 'utenti:signup' %}">Registrati</a></li>
+                        </ul>
+                    </li>
+                {% endif %}
+
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenuto principale -->
+    <div class="container flex-grow-1 py-4">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    {% include "footer.html" %}
+    {% block extra_js %}{% endblock %}
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

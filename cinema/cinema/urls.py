@@ -18,13 +18,12 @@ from django.contrib import admin
 from django.urls import path, re_path,include
 from django.shortcuts import redirect
 from .initcmds import init_db,erase_db
-from .views import temp
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", temp , name="temp"),
     path("films/", include("film.urls")),
-    #re_path(r'$^|$/^', lambda request: redirect('film:tmp')), Da sistemare
+    path("accounts/", include("utenti.urls")),
+    re_path(r'$^|$/^', lambda request: redirect('film:homepage')), 
 ]
 
 

@@ -28,6 +28,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# LOGIN/LOGOUT redirect
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "film:homepage"  
+LOGOUT_REDIRECT_URL = "film:homepage"
+
+
+
 
 # Application definition
 
@@ -39,8 +46,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'film',
+    'utenti.apps.UtentiConfig',  
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
- 
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

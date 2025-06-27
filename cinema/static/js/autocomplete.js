@@ -1,3 +1,5 @@
+// Aggiunge un menu a tendina per consigliare la ricerca all'utente tramite "autocompletamento"
+// sfruttando AJAX per contattare il server
 
 document.addEventListener("DOMContentLoaded", function () {
     const fields = ["titolo", "genere"];

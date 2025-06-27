@@ -4,6 +4,8 @@ import os
 from datetime import datetime, timedelta
 import random
 from django.utils import timezone
+from django.contrib.auth.models import User
+
 
 
 def erase_db():
@@ -11,17 +13,20 @@ def erase_db():
     Film.objects.all().delete()
     Sala.objects.all().delete()
     Proiezione.objects.all().delete() 
+    User.objects.filter(username__startswith='utente').delete() #cancella quelli di test
+
 
 
 def init_db():
     
     if len(Film.objects.all()) != 0:
         return
-    
+    '''
     load_film()  
     load_sale()    
-    load_proiezioni()       
-
+    load_proiezioni()
+    crea_utenti()       
+    '''
 
 def load_film():
     path = os.path.join(os.path.dirname(__file__), "Jsons", "film.json")   
@@ -120,5 +125,27 @@ def load_proiezioni():
                 print(f"Errore: {e} salto questa proiezione per il film '{film.titolo}'")
                 continue  
 
+# La funzione crea 30 utenti, 5 gold, 15 silver, 10 basic (default)
+def crea_utenti():
+    utenti_creati = []
+
+    for i in range(1, 31):
+        username = f'utente{i}'
+        email = f'utente{i}@esempio.com'
+        password = 'progetto123'
+        user = User.objects.create_user(username=username, email=email, password=password)
+        utenti_creati.append(user)
+
+    # A questo punto i ProfiloUtente sono stati creati automaticamente grazie ai signals
+
+    #  15 utenti a 'silver'
+    for user in utenti_creati[0:15]:
+        user.profiloutente.abbonamento = 'silver'
+        user.profiloutente.save()
+
+    #  5 utenti a 'gold'
+    for user in utenti_creati[15:20]:
+        user.profiloutente.abbonamento = 'gold'
+        user.profiloutente.save()
 
 

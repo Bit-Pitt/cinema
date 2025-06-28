@@ -35,6 +35,18 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav gap-3 fs-5">
+                    {% if user.is_staff %}      <!-- Solo se utente staff mostriamo queste opzioni -->
+                    <li class="nav-item dropdown">
+                    <a class="nav-link text-white dropdown-toggle" href="#" id="gestioneDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Gestione
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="gestioneDropdown">
+                        <li><a class="dropdown-item" href="{% url 'film:film_create' %}">Aggiungi film</a></li>
+                        <li><a class="dropdown-item" href="{% url 'film:film_list_modifica' %}">Modifica film</a></li>
+                        <!-- faremo lo stesso per le proiezioni -->
+                    </ul>
+                    </li>
+                    {% endif %}             <!-- Il resto delle opzioni per tutti-->
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{% url 'film:cerca_film' %}">Cerca Film</a>
                     </li>
@@ -45,23 +57,26 @@
                         <a class="nav-link text-white" href="#">Abbonati</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'utenti:lista_discussioni' %}">Forum</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link text-white" href="#">Contatti</a>
                     </li>
                     <!-- Qui la logica che riguarda il campo utente (se loggato/silver/gold)-->
                     {% if user.is_authenticated %}
                     {% with user.profiloutente.abbonamento as abbonamento %}
-                        <li class="nav-item dropdown">
+                        <li class="nav-item dropdown"> <!-- IN BASE al tipo di utente viene un colore diverso del NOME! -->
                             <a class="nav-link dropdown-toggle d-flex align-items-center"
-                            href="#" role="button" data-bs-toggle="dropdown"
-                            style="color:
+                            href="#" role="button" data-bs-toggle="dropdown"    
+                            style="color:       
                                 {% if abbonamento == 'gold' %}
                                     gold
                                 {% elif abbonamento == 'silver' %}
-                                    silver
+rgb(198, 192, 255)
                                 {% else %}
                                     white
-                                {% endif %}
-                            ">
+                                {% endif %} 
+                            ">  
                                 <i class="bi bi-person-circle fs-4 me-1"></i> {{ user.username }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
@@ -72,7 +87,7 @@
                                         {% elif abbonamento == 'silver' %}
                                             Utente Silver
                                         {% else %}
-                                            Utente Basic
+                                            Utente Base
                                         {% endif %}
                                     </span>
                                 </li>
@@ -106,13 +121,24 @@
             </div>
         </div>
     </nav>
+    {% if messages %}               <!-- Questo gestisce i messaggi di successo etc ... -->
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
-    <!-- Contenuto principale -->
+
+    <!-- Contenuto principale, sarà esteso dagli altri file html -->
     <div class="container flex-grow-1 py-4">
         {% block content %}{% endblock %}
     </div>
 
-    <!-- Footer -->
+    <!-- Footer incluso -->
     {% include "footer.html" %}
     {% block extra_js %}{% endblock %}
 

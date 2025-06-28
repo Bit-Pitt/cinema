@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Forum{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Discussioni del Forum</h2>
+
+<!-- Form ordinamento -->
+<form method="get" class="mb-3">
+    <label for="ordina" class="form-label text-white">Ordina per:</label>
+    <!-- FORM con campo onchange per evitare il bottone, il valore mostrato sarà quello selezionato-->
+    <select name="ordina" id="ordina" class="form-select w-auto d-inline" onchange="this.form.submit()">
+        <option value="data_creazione" {% if ordinamento == 'data_creazione' %}selected{% endif %}>Data creazione</option>
+        <option value="ultimo_messaggio_data" {% if ordinamento == 'ultimo_messaggio_data' %}selected{% endif %}>Ultimo messaggio</option>
+        <option value="num_messaggi" {% if ordinamento == 'num_messaggi' %}selected{% endif %}>Numero messaggi</option>
+    </select>
+</form>
+
+<!-- Pulsante per creare una nuova discussione, visibile solo se l'utente è loggato -->
+<!-- Al controllo lato client (questo) si affiancherà per sicurezza quello lato server -->
+{% if user.is_authenticated %}
+<div class="mb-3">
+    <a href="{% url 'utenti:crea_discussione' %}" class="btn btn-warning">
+        <i class="bi bi-plus-circle me-1"></i> Nuova Discussione
+    </a>
+</div>
+{% endif %}
+
+
+<!-- Lista discussioni -->
+<div class="list-group">    <!-- Utilizzo della classe "list-group" di bootstrap per mostrare le discussioni-->
+    {% for discussione in page_obj %}           <!-- compongo l'url per la detail view-->
+    <a href="{% url 'utenti:dettaglio_discussione' discussione.id %}" class="list-group-item list-group-item-action bg-dark text-white mb-2 rounded">
+        <h5 class="mb-1 text-warning">{{ discussione.titolo }}</h5>
+        <small class="text-light">                      <!-- utilizzo di filtri pre-esistenti -->
+            Creato da {{ discussione.utente.username }} il {{ discussione.data_creazione|date:"d/m/Y H:i" }}<br>
+            Ultimo messaggio: {{ discussione.ultimo_messaggio_data|date:"d/m/Y H:i"|default:"Nessuno" }} |
+            {{ discussione.messaggi.count }} messaggi
+        </small>         <!-- grazie a related name si può fare discussione.messaggi-->
+    </a>
+    {% empty %}
+    <p class="text-white">Nessuna discussione trovata.</p>
+    {% endfor %}
+</div>
+
+<!-- Paginazione -->
+{% if page_obj.has_other_pages %}
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?ordina={{ ordinamento }}&page={{ page_obj.previous_page_number }}">«</a>
+        </li>
+        {% endif %}
+        <li class="page-item disabled">
+            <span class="page-link">Pagina {{ page_obj.number }} di {{ page_obj.paginator.num_pages }}</span>
+        </li>
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?ordina={{ ordinamento }}&page={{ page_obj.next_page_number }}">»</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

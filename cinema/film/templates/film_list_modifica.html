@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-white mb-3">Seleziona un film da modificare</h2>
+    <ul class="list-group">
+        {% for film in film_list %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ film.titolo }}
+                <a href="{% url 'film:film_update' film.pk %}" class="btn btn-primary btn-sm">Modifica</a>
+            </li>
+        {% empty %}
+            <li class="list-group-item">Nessun film disponibile.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

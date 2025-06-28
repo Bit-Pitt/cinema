@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}     <!-- necessario per usare i form crispy -->
+
+{% block title %}Discussione{% endblock %}
+
+{% block content %}
+<h3 class="text-warning">{{ discussione.titolo }}</h3>
+<p style="color: white;">
+    Creato da {{ discussione.utente.username }} il {{ discussione.data_creazione|date:"d/m/Y H:i" }}
+</p>
+
+<hr>
+<h5>Messaggi:</h5>
+<div class="list-group">        <!-- utilizzo di bootstrap per "list-group"-->
+    {% for msg in messaggi %}
+    <div class="list-group-item bg-secondary text-white mb-2 rounded">
+        <strong>{{ msg.utente.username }}</strong> ha scritto il {{ msg.data_invio|date:"d/m/Y H:i" }}:<br>
+        <p class="mt-2">{{ msg.contenuto }}</p>
+    </div>
+    {% empty %}
+    <p>Nessun messaggio ancora.</p>
+    {% endfor %}
+</div>
+
+
+<!-- Form per aggiungere un nuovo messaggio, visibile solo se l'utente è autenticato -->
+{% if user.is_authenticated %}
+<hr>
+<div class="mt-4">
+    <h5>Aggiungi un nuovo messaggio</h5>
+    <!-- uso di crispy form e csrf token -->
+    <form method="post" action="{% url 'utenti:aggiungi_messaggio' discussione.pk %}">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-warning">Invia</button>      <!-- bottone giallo come da stile -->
+    </form>
+</div>
+{% else %}
+<!-- Messaggio informativo se non autenticato -->
+<div class="alert alert-info mt-4">
+    Devi <a href="{% url 'utenti:login' %}">accedere</a> per poter scrivere un messaggio.
+</div>
+{% endif %}
+
+<!-- Impaginazione -->
+<div class="mt-4">
+    {% if messaggi.has_other_pages %}
+    <nav aria-label="Paginazione messaggi">
+        <ul class="pagination justify-content-center">
+            {% if messaggi.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ messaggi.previous_page_number }}">Precedente</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">Precedente</span></li>
+            {% endif %}
+
+            {% for num in messaggi.paginator.page_range %}
+                {% if messaggi.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if messaggi.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ messaggi.next_page_number }}">Successiva</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">Successiva</span></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

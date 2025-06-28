@@ -7,12 +7,12 @@
     <h1 class="mb-4 text-white">{{ object.titolo }}</h1>
     
     <div class="row">
-        <!-- Immagine poster -->
+        <!-- Immagine poster (con load dinamico come nella home)-->
         <div class="col-md-4">
             <img src="{% static 'genere/'|add:immagine_genere %}" alt="Poster di {{ object.titolo }}" class="img-fluid rounded shadow">
         </div>
         
-        <!-- Dettagli film -->
+        <!-- Dettagli film, usando una table bootstrap -->    
         <div class="col-md-8">
             <table class="table table-dark table-striped rounded shadow">
                 <tbody>
@@ -34,18 +34,123 @@
                     </tr>
                 </tbody>
             </table>
-
-            <a href="{% url 'film:homepage' %}" class="btn btn-warning mt-3">Torna alla Home</a>
         </div>
     </div>
 </div>
 
-DA AGGIUNGERE:  
-<br>
--   Bottone "prenota" che compare magari solo se ha una proiezione questa settimana
-<br> Bottone "commenta" e "vota"  [solo se utente loggato]!
-<br>
--   informazioni sui rating (immagina una grafico a barre per il rating 1-5)
-<br>
--   lista commenti sotto
-{% endblock %}
+
+<!-- Bottoni "commenta" e "vota" separati, visibili solo se loggato -->
+{% if user.is_authenticated %}
+    <!-- Bottone "prenota" che compare solo se è presente una proiezione questa settimana -->
+    {% if proiezione_questa_settimana %}
+        <button type="button" class="btn btn-success mt-3">
+            Prenota
+        </button>
+    {% endif %}
+    <button type="button" class="btn btn-primary mt-3 me-2" 
+        onclick="location.href='{% url 'utenti:commenta' object.pk %}'">
+        Commenta
+    </button>
+    <button type="button" class="btn btn-secondary mt-3"
+        onclick="location.href='{% url 'utenti:vota' object.pk %}'">
+        Vota
+    </button>
+{% else %}
+    <!-- Messaggio alert usato prima per dire "devi essere loggato per …" con redirect -->
+    <div class="alert alert-info mt-3" role="alert">
+        Devi <a href="{% url 'utenti:login' %}?next={{ request.path }}">accedere</a> per prenotare, commentare o votare.
+    </div>
+{% endif %}
+
+<!-- === Grafico valutazioni con Bootstrap - Barre orizzontali con stellina gialla e voti accanto === -->
+<div class="mt-5">
+    <h4 class="text-white">Valutazioni degli utenti</h4>
+
+    {% if totale_voti > 0 %}
+        <div class="list-group">
+            {% for entry in distribuzione_voti %}
+                <div class="mb-2">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <div>
+                            <span class="text-warning fw-bold me-1">{{ entry.voto }}</span>
+                            <span class="text-warning">★</span>
+                        </div>
+                        <small class="text-warning">{{ entry.conteggio }} voti</small>
+                    </div>
+                    <div class="progress" style="height: 24px;">
+                        <div class="progress-bar"
+                             role="progressbar"
+                             style="width: {{ entry.percentuale }}%;
+                                    background-color:
+                                    {% if entry.voto == 1 %}#dc3545
+                                    {% elif entry.voto == 2 %}#fd7e14
+                                    {% elif entry.voto == 3 %}#ffc107
+                                    {% elif entry.voto == 4 %}#0dcaf0
+                                    {% elif entry.voto == 5 %}#198754
+                                    {% endif %};"
+                             aria-valuenow="{{ entry.percentuale }}"
+                             aria-valuemin="0"
+                             aria-valuemax="100">
+                            {{ entry.percentuale|floatformat:1 }}%
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-white">Nessuna valutazione disponibile.</p>
+    {% endif %}
+</div>
+
+<!-- Lista dei commenti, usato un list-group di Bootstrap -->
+<div class="mt-5">
+    <h4 class="text-white">Commenti</h4>
+
+    {% if commenti %}
+        <div class="list-group">
+            {% for commento in commenti %}
+                <div class="list-group-item bg-secondary text-white mb-2 rounded">
+                    <strong>{{ commento.utente.username }}</strong> - 
+                    <small class="text-muted">{{ commento.data_creazione|date:"d/m/Y H:i" }}</small>
+                    <p class="mt-2">{{ commento.testo }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Paginazione -->
+        {% if commenti.has_other_pages %}
+        <nav aria-label="Paginazione commenti" class="mt-3">
+            <ul class="pagination justify-content-center">
+                {% if commenti.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ commenti.previous_page_number }}">Precedente</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">Precedente</span></li>
+                {% endif %}
+
+                {% for num in commenti.paginator.page_range %}
+                    {% if commenti.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if commenti.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ commenti.next_page_number }}">Successiva</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">Successiva</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    {% else %}
+        <p class="text-white">Nessun commento disponibile.</p>
+    {% endif %}
+</div>
+
+
+{%endblock%}

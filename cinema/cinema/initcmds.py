@@ -1,32 +1,41 @@
 from film.models import *
 import json
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta , time
 import random
 from django.utils import timezone
 from django.contrib.auth.models import User
+from utenti.models import *
+
 
 
 
 def erase_db():
-    print("Cancello il DB")          
+    print("Cancello il DB")         
     Film.objects.all().delete()
     Sala.objects.all().delete()
     Proiezione.objects.all().delete() 
     User.objects.filter(username__startswith='utente').delete() #cancella quelli di test
+    Commento.objects.all().delete()
+    Rating.objects.all().delete()
+    Discussione.objects.all().delete()
+    Messaggio.objects.all().delete()
+
 
 
 
 def init_db():
-    
     if len(Film.objects.all()) != 0:
         return
-    '''
+    
     load_film()  
     load_sale()    
     load_proiezioni()
-    crea_utenti()       
-    '''
+    crea_utenti()         
+    crea_commenti()
+    crea_ratings()
+    load_forum()
+    crea_staff()
 
 def load_film():
     path = os.path.join(os.path.dirname(__file__), "Jsons", "film.json")   
@@ -148,4 +157,198 @@ def crea_utenti():
         user.profiloutente.abbonamento = 'gold'
         user.profiloutente.save()
 
+# Popolo il db di commenti: 
+# Nel file "commenti.json" ci sono 30 commenti generici
+# Per ogni film do un numero di commenti casuali  da 3 a 10, e li prendo casualmente dai commenti nel json
+def crea_commenti():
+    path = os.path.join(os.path.dirname(__file__), "Jsons", "commenti.json")   
+
+    with open(path, encoding='utf-8') as f:
+        commenti_generici = json.load(f)
+
+    films = Film.objects.all()
+
+    for film in films:
+        numero_commenti = random.randint(3, 10)
+        commenti_casuali = random.sample(commenti_generici, numero_commenti)
+
+        for c in commenti_casuali:
+            try:
+                utente = User.objects.get(username=c["utente"])
+                    # qui generlo la data   casuale
+                random_hour = random.randint(0, 23)
+                random_minute = random.randint(0, 59)
+                data_base = datetime.strptime(c["data"], "%Y-%m-%d")
+                data_completa = datetime.combine(data_base.date(), time(random_hour, random_minute))
+                data_completa = timezone.make_aware(data_completa)
+
+
+                Commento.objects.create(
+                    film=film,
+                    utente=utente,
+                    testo=c["testo"],
+                    data_commento=data_completa
+                )
+            except User.DoesNotExist:
+                print(f"Utente non trovato: {c['utente']} — commento ignorato")
+
+
+# La funzione crea i ratings nel seguente modo:
+# Ottiene i 20 utenti  "utenti{i}" carica in "load_utenti"  (i silver e gold)
+# Per ogni film, assegna un numero randomico di rating, questi rating hanno un utente random e voto random
+def crea_ratings():
+    utenti_nomi = [f'utente{i}' for i in range(1, 21)]
+    utenti = {u.username: u for u in User.objects.filter(username__in=utenti_nomi)}
+
+    film_list = Film.objects.all()
+
+    for film in film_list:
+        num_ratings = random.randint(10, 20)
+        utenti_usati = set()
+
+        for _ in range(num_ratings):
+            while True:
+                username = random.choice(utenti_nomi)
+                if username not in utenti_usati:
+                    utenti_usati.add(username)
+                    break
+
+            utente = utenti.get(username)
+            if not utente:
+                continue 
+
+            voto = random.randint(1, 5)
+            Rating.objects.create(
+                film=film,
+                utente=utente,
+                voto=voto
+            )
+
+
+# Crea una data random nel 2024 per popolare il forum
+def random_data_2024():
+    start = datetime(2024, 1, 1)
+    end = datetime(2024, 12, 31)
+    delta = end - start
+    random_days = random.randint(0, delta.days)
+    random_minutes = random.randint(0, 1440)    #24*60 (minuti in un giorno)
+    return timezone.make_aware(start + timedelta(days=random_days, minutes=random_minutes))
+
+
+# La funzione crea 10 discussioni (con titolo casuale)  e riguardo un film casuale
+# Per ogni tipo di discussione ce allegato un dizionari di messaggi che verranno scelti a caso (anche il numero
+# di messaggi  è casuale) e poi saranno collegati alla discussione
+
+def load_forum():
+    utenti = list(User.objects.filter(username__startswith="utente"))
+    film_tutti = list(Film.objects.all())
+
+    titoli_categorie = {
+        "Pareri su": "generale",
+        "Discussione su": "generale",
+        "Opinioni su": "generale",
+        "Cosa ne pensate di": "generale",
+        "Analisi del film": "generale",
+        "Recitazione in": "recitazione",
+        "Genere e stile di": "genere",
+        "Soundtrack di": "musica",
+        "Scene memorabili in": "scene",
+        "Regia in": "regia"
+    }
+
+    messaggi_per_categoria = {
+        "generale": [
+            "Bellissimo film!", "Non mi ha convinto.", "Film molto interessante.",
+            "Lo consiglio a tutti.", "Potevano fare di meglio.",
+            "Un film che rivedrei volentieri.", "Mi ha sorpreso in positivo.",
+            "Non è il mio genere preferito, ma l'ho apprezzato.",
+            "Trama coinvolgente e mai noiosa.", "Troppo sopravvalutato secondo me."
+        ],
+        "recitazione": [
+            "L’attore protagonista è eccezionale.", "Recitazione mediocre.", "Ottima interpretazione del cast.",
+            "Non mi è piaciuto il protagonista.", "Cast di altissimo livello.",
+            "Gli attori secondari rubano la scena!", "Dialoghi ben recitati e naturali.",
+            "Alcuni attori fuori ruolo.", "Recitazione molto intensa.", "Performance emozionante."
+        ],
+        "genere": [
+            "Mi aspettavo più azione.", "Adoro questo stile narrativo.",
+            "Il ritmo è lento ma coinvolgente.", "Un mix di generi ben riuscito.",
+            "Troppo drammatico per i miei gusti.", "Perfetto per gli amanti del thriller.",
+            "Un classico esempio di noir moderno.", "Genere trattato in modo originale.",
+            "Poco innovativo rispetto ad altri film.", "Un horror che non fa paura."
+        ],
+        "musica": [
+            "Colonna sonora fantastica!", "Le musiche sono da brividi.",
+            "Soundtrack un po’ anonima.", "Adoro le musiche di questo film.",
+            "Musiche che esaltano ogni scena.", "Compositore in gran forma.",
+            "Tema musicale memorabile.", "Colonna sonora fuori contesto.",
+            "Musiche troppo invasive.", "La musica accompagna perfettamente le emozioni."
+        ],
+        "scene": [
+            "La scena finale è epica.", "Mi ha colpito molto una scena in particolare.",
+            "Scene d’azione ben girate.", "Momenti molto toccanti.",
+            "L’inseguimento è stato spettacolare.", "Sequenza iniziale da brividi.",
+            "La scena romantica mi ha emozionato.", "Troppi rallenty inutili.",
+            "Scene ben montate e fluide.", "Alcune scene sembravano fuori luogo."
+        ],
+        "regia": [
+            "Regia spettacolare.", "Il regista ha fatto un gran lavoro.",
+            "Scelte registiche discutibili.", "Inquadrature memorabili.",
+            "Una regia che lascia il segno.", "Montaggio e ritmo gestiti benissimo.",
+            "Troppo autoreferenziale.", "Stile registico elegante.",
+            "Regia piatta e senza personalità.", "Uso intelligente della macchina da presa."
+        ]
+    }
+
+    #Qui creo le 10 discussioni
+    for _ in range(10):
+        film = random.choice(film_tutti)
+        utente_creatore = random.choice(utenti)
+
+        titolo_base = random.choice(list(titoli_categorie.keys()))
+        categoria = titoli_categorie[titolo_base]           #mi serve per poi trovare i messaggi coerenti
+        titolo = f"{titolo_base} {film.titolo}"
+
+        discussione = Discussione.objects.create(
+            titolo=titolo,
+            utente=utente_creatore,
+            data_creazione=random_data_2024()
+        )
+
+        #Qui creo i messaggi correlati alle discussioni
+        n_messaggi = random.randint(3, 15)
+        ultimo_msg_data = None
+
+        for _ in range(n_messaggi):
+            autore = random.choice(utenti)
+            contenuto = random.choice(messaggi_per_categoria[categoria])
+            data = random_data_2024()
+
+            if ultimo_msg_data:
+                ultimo_msg_data = max(ultimo_msg_data, data)
+            else:
+                ultimo_msg_data = data
+
+            Messaggio.objects.create(
+                discussione=discussione,
+                utente=autore,
+                contenuto=contenuto,
+                data_invio=data
+            )
+
+        discussione.ultimo_messaggio_data = ultimo_msg_data
+        discussione.save()
+
+#Crea 5 utenti staff:   staffi {i=0..5} psw: progetto123
+def crea_staff():
+    for i in range(1, 6):
+        username = f"staff{i}"
+        if not User.objects.filter(username=username).exists():
+            user = User.objects.create_user(
+                username=username,
+                password="progetto123",
+            )
+            user.is_staff = True
+            user.save()
+            
 

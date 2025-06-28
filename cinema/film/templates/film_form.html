@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-white mb-4">
+        {% if nome_view == 'FilmUpdateView' %}
+            Modifica Film
+        {% else %}
+            Aggiungi un Nuovo Film
+        {% endif %}
+    </h2>
+
+    <form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-success">
+        {% if nome_view == 'FilmUpdateView' %}
+            Salva Modifiche
+        {% else %}
+            Aggiungi Film
+        {% endif %}
+    </button>
+    <a href="{% url 'film:homepage' %}" class="btn btn-secondary ms-2">Annulla</a>
+    </form>
+
+</div>
+{% endblock %}

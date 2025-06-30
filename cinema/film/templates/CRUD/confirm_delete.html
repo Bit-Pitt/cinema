@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}       <!-- Template per CONFERMARE la delete di un film/proiezione-->
+<div class="container mt-5 text-white">
+  <h3>Conferma eliminazione</h3>
+  <p>Sei sicuro di voler eliminare: <strong>{{ object }}</strong>?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Sì, elimina</button>
+    <a href="{{ success_url|default:request.META.HTTP_REFERER }}" class="btn btn-secondary ms-2">Annulla</a>
+  </form>
+</div>
+{% endblock %}

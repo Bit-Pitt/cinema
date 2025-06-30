@@ -44,7 +44,7 @@ class Proiezione(models.Model):
 
     #VALIDAZIONE: non posso aggiungere una proiezione in una sala occupata
     def clean(self):
-        print("-----------------Validazione")
+        print("-----------------Validazione della proiezione")
         fine_proiezione = self.data_ora + timedelta(minutes=self.film.durata)
 
         # Prende tutte le proiezioni nella stessa sala, escludendo se stessa (in caso di update)

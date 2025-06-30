@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, re_path,include
 from django.shortcuts import redirect
 from .initcmds import init_db,erase_db
+from utenti.views import disattiva_abbonamenti
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,6 +28,7 @@ urlpatterns = [
 ]
 
 
-#erase_db()
+erase_db()
 init_db()
+disattiva_abbonamenti()
 

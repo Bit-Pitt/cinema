@@ -5,8 +5,11 @@
     <ul class="list-group">
         {% for film in film_list %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
-                {{ film.titolo }}
-                <a href="{% url 'film:film_update' film.pk %}" class="btn btn-primary btn-sm">Modifica</a>
+                <span>{{ film.titolo }}</span>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'film:film_update' film.pk %}" class="btn btn-primary btn-sm">Modifica</a>
+                    <a href="{% url 'film:film_delete' film.pk %}" class="btn btn-danger btn-sm">Elimina</a>
+                </div>
             </li>
         {% empty %}
             <li class="list-group-item">Nessun film disponibile.</li>
@@ -14,3 +17,4 @@
     </ul>
 </div>
 {% endblock %}
+

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView,ListView, DetailView
+from django.views.generic import *
 from .forms import * 
 from django.db.models import Count
 from .models import *
@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from datetime import timedelta , date
 
 
 # La classe sfrutta la "createView" cbv a cui associa il form in automatico, così come il template grazie a Django users
@@ -158,7 +159,84 @@ class RatingCreateView(CreateView):
 
 
 
- 
+# Adesso la logica per gestire l'abbonamento
+CODICI_SILVER = {"codsilver1", "silver2025"}
+CODICI_GOLD = {"codgold1", "goldaccess2025"}
+
+@login_required
+def abbonati_view(request):
+    profilo, _ = ProfiloUtente.objects.get_or_create(user=request.user)
+    return render(request, 'abbonati.html', {"profilo": profilo})
+
+# La view gestisce la logica di abbonamento
+# Un utente loggato può abbonarsi silver o gold tramite codice
+# Un utente silver solo gold tramite codice
+@login_required
+def attiva_abbonamento(request):
+    if request.method == "POST":
+        codice = request.POST.get("codice", "").strip().lower()
+        tipo = request.POST.get("tipo")  # 'silver' o 'gold'
+        profilo, _ = ProfiloUtente.objects.get_or_create(user=request.user)
+
+        oggi = date.today()
+
+        # Blocca se già Gold attivo
+        if profilo.abbonamento == "gold":
+            return redirect("utenti:abbonati")
+
+        # Blocca se vuole riattivare Silver quando già attivo
+        if tipo == "silver" and profilo.abbonamento == "silver":
+            return redirect("utenti:abbonati")
+
+        # Controlla codice valido
+        if (tipo == "silver" and codice in CODICI_SILVER) or (tipo == "gold" and codice in CODICI_GOLD):
+            profilo.abbonamento = tipo
+            profilo.scadenza_abbonamento = oggi + timedelta(days=30)
+            profilo.save()
+
+        return redirect("utenti:abbonati")
+
+
+#Per creare utente con abbonamento scaduto
+'''
+py -m  manage shell
+from django.contrib.auth.models import User
+from film.models import ProfiloUtente
+from datetime import date, timedelta
+user = User.objects.get(username='utente1')
+profilo = ProfiloUtente.objects.get(user=user)
+profilo.abbonamento = 'silver'
+profilo.scadenza_abbonamento = date.today() - timedelta(days=5)  # 5 giorni fa
+profilo.save()
+'''
+#La funzione andrebbe lanciata 1 volta ogni giorno  (attualmente lanciata ogni volta che runserver)
+def disattiva_abbonamenti():
+    oggi = date.today()
+    utenti_scaduti = ProfiloUtente.objects.filter(
+            scadenza_abbonamento__lt=oggi
+        ).exclude(abbonamento='basic')
+
+    for profilo in utenti_scaduti:
+        profilo.abbonamento = 'basic'
+        profilo.scadenza_abbonamento = None
+        profilo.save()
+        print(f"Abbonamento scaduto per: {profilo.user.username}")
+
+
+# Adesso funzioni per i Moderatori
+
+# Lista dei commenti (per moderatori)
+class CommentoListView(ListView):
+    model = Commento
+    template_name = 'moderazione/commento_list.html'
+    context_object_name = 'commenti'
+    ordering = ['film__titolo', 'utente__username']  # ordinamento alfabetico per film e utente
+
+# DeleteView per commento
+class CommentoDeleteView(DeleteView):
+    model = Commento
+    template_name = 'moderazione/commento_confirm_delete.html'
+    success_url = reverse_lazy('moderazione:lista_commenti')
 
 
 

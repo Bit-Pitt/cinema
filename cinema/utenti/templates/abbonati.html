@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5 text-white">
+    <h2 class="mb-4 text-warning">Abbonati</h2>
+
+    {% now "Y-m-d" as oggi %}
+
+    {% if profilo.abbonamento == "gold" and profilo.scadenza_abbonamento >= oggi %}
+        <p>Hai già un abbonamento <strong>Gold</strong> attivo fino al {{ profilo.scadenza_abbonamento }}</p>
+
+    {% else %}
+        <!-- Silver -->
+        <div class="card bg-dark text-white mb-4">
+            <div class="card-header"><h4>Abbonamento Silver</h4></div>
+            <div class="card-body">
+                <ul>
+                    <li>Sconto del 10% sulle prenotazioni</li>
+                </ul>
+                {% if profilo.abbonamento != "silver" and profilo.abbonamento != "gold" %}
+                    <form method="POST" action="{% url 'utenti:attiva_abbonamento' %}" class="d-flex gap-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="tipo" value="silver">
+                        <input type="text" name="codice" class="form-control w-25" placeholder="Codice Silver">
+                        <button type="submit" class="btn btn-outline-light">Abbonati Silver</button>
+                    </form>
+                {% else %}
+                    {% if profilo.abbonamento == "silver"%}
+                        <p class="text-success mt-2">Silver attivo fino al {{ profilo.scadenza_abbonamento }}</p>
+                    {% else %}
+                        <p class="text-success mt-2">Gold attivo fino al {{ profilo.scadenza_abbonamento }}</p>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Gold -->
+        <div class="card bg-warning text-dark">
+            <div class="card-header"><h4>Abbonamento Gold</h4></div>
+            <div class="card-body">
+                <ul>
+                    <li>Sconto del 20% sulle prenotazioni</li>
+                    <li>Accesso esclusivo ai posti gold in tutte le sale</li>
+                </ul>
+                {% if profilo.abbonamento != "gold" %}
+                    <form method="POST" action="{% url 'utenti:attiva_abbonamento' %}" class="d-flex gap-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="tipo" value="gold">
+                        <input type="text" name="codice" class="form-control w-25" placeholder="Codice Gold">
+                        <button type="submit" class="btn btn-dark">Abbonati Gold</button>
+                    </form>
+                {% else %}
+                    <p class="text-success mt-2">Gold attivo fino al {{ profilo.scadenza_abbonamento }}</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

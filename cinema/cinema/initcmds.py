@@ -1,7 +1,7 @@
 from film.models import *
 import json
 import os
-from datetime import datetime, timedelta , time
+from datetime import datetime, timedelta , time, date
 import random
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -15,11 +15,12 @@ def erase_db():
     Film.objects.all().delete()
     Sala.objects.all().delete()
     Proiezione.objects.all().delete() 
-    User.objects.filter(username__startswith='utente').delete() #cancella quelli di test
+    User.objects.all().delete() #cancella quelli di test
     Commento.objects.all().delete()
     Rating.objects.all().delete()
     Discussione.objects.all().delete()
     Messaggio.objects.all().delete()
+    ProfiloUtente.objects.all().delete()
 
 
 
@@ -150,11 +151,13 @@ def crea_utenti():
     #  15 utenti a 'silver'
     for user in utenti_creati[0:15]:
         user.profiloutente.abbonamento = 'silver'
+        user.profiloutente.scadenza_abbonamento = date.today()+timedelta(days=30)
         user.profiloutente.save()
 
     #  5 utenti a 'gold'
     for user in utenti_creati[15:20]:
         user.profiloutente.abbonamento = 'gold'
+        user.profiloutente.scadenza_abbonamento = date.today()+timedelta(days=30)
         user.profiloutente.save()
 
 # Popolo il db di commenti: 
@@ -340,6 +343,7 @@ def load_forum():
         discussione.save()
 
 #Crea 5 utenti staff:   staffi {i=0..5} psw: progetto123
+#Crea 5 utenti moderatori  moderatorxi {x1..5}
 def crea_staff():
     for i in range(1, 6):
         username = f"staff{i}"
@@ -350,5 +354,20 @@ def crea_staff():
             )
             user.is_staff = True
             user.save()
+
+    for i in range(1, 6):
+        username = f"moderatori{i}"
+        if not User.objects.filter(username=username).exists():
+            user = User.objects.create_user(
+                username=username,
+                password="progetto123",
+            )
+            user.save()
+            profilo = ProfiloUtente.objects.get(user=user)
+            profilo.is_moderatore = True
+            profilo.save()
+
+
+    
             
 

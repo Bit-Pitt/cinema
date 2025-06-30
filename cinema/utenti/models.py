@@ -20,6 +20,7 @@ class ProfiloUtente(models.Model):
         max_length=10, choices=SCELTE_ABBONAMENTO, default='basic'
     )
     is_moderatore = models.BooleanField(default=False)
+    scadenza_abbonamento = models.DateField(null=True, blank=True)
 
 
 #Questa classe (tabella nel db) rappresenta i commenti correlati a un film

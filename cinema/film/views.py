@@ -80,6 +80,7 @@ class DetailFilmView(DetailView):
 
         # Verifica proiezioni nella settimana corrente
         oggi = timezone.now().date()
+        print(f"------------------------DATA ATTUALE: {oggi}")
         fine_settimana = oggi + timedelta(days=7)
         context['proiezione_questa_settimana'] = Proiezione.objects.filter(
             film=film,
@@ -180,14 +181,15 @@ def autocomplete(request):
 class FilmCreateView(CreateView):
     model = Film
     form_class = FilmForm
-    template_name = 'film_form.html'
+    template_name = 'CRUD/film_form.html'
     success_url = reverse_lazy('film:homepage')  
 
 # CBV per la modifica di un film
+# Il form è condiviso con la createView ecco perchè passo al contesto nome_view (per disambiguare i casi)
 class FilmUpdateView(UpdateView):
     model = Film
     form_class = FilmForm
-    template_name = 'film_form.html'
+    template_name = 'CRUD/film_form.html'
     success_url = reverse_lazy('film:homepage')
 
     #Perchè condivide il template con la ListView (modificaView)
@@ -196,10 +198,10 @@ class FilmUpdateView(UpdateView):
         context["nome_view"] = self.__class__.__name__
         return context
 
-# ListView per scegliere il film da modificare
+# ListView per scegliere il film da modificare (mostrata quando lo staff clicca su "modifica film")
 class FilmListModificaView(ListView):
     model = Film
-    template_name = 'film_list_modifica.html'
+    template_name = 'CRUD/film_list_modifica.html'
     context_object_name = 'film_list'
     ordering = ['titolo']  # <-- Ordina alfabeticamente per titolo (A-Z)
 
@@ -208,6 +210,68 @@ class FilmListModificaView(ListView):
         context["nome_view"] = self.__class__.__name__
         return context
 
+class FilmDeleteView(DeleteView):
+    model = Film
+    template_name = 'CRUD/confirm_delete.html'
+    success_url = reverse_lazy('film:film_list_modifica')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["nome_view"] = self.__class__.__name__
+        return context
+
+
+
+#Procedo alla creazione delle 3 view analoghe ai Film per la Creazione/Modifica di Proiezioni
+# Analogamente a prima: form personalizzato
+class ProiezioneCreateView(CreateView):
+    model = Proiezione
+    form_class = ProiezioneForm
+    template_name = 'CRUD/proiezione_form.html'
+    success_url = reverse_lazy('film:homepage')
+
+# Il form è condiviso con la createView ecco perchè passo al contesto nome_view (per disambiguare i casi)
+class ProiezioneUpdateView(UpdateView):
+    model = Proiezione
+    form_class = ProiezioneForm
+    template_name = 'CRUD/proiezione_form.html'
+    success_url = reverse_lazy('film:homepage')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["nome_view"] = self.__class__.__name__
+        return context
+
+
+class ProiezioneListModificaView(ListView):
+    model = Proiezione
+    template_name = 'CRUD/proiezione_list_modifica.html'
+    context_object_name = 'proiezione_list'
+    
+    #Ordino per titolo del film
+    def get_queryset(self):
+        return Proiezione.objects.select_related('film').order_by('film__titolo')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["nome_view"] = self.__class__.__name__
+        return context
+    
+class ProiezioneDeleteView(DeleteView):
+    model = Proiezione
+    template_name = 'CRUD/confirm_delete.html'
+    success_url = reverse_lazy('film:proiezione_list_modifica')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["nome_view"] = self.__class__.__name__
+        return context
+
+
+
+#View per l'opzione "Dove siamo" della navigation bar
+def dove_siamo(request):
+    return render(request, 'dove_siamo.html')
 
 
 

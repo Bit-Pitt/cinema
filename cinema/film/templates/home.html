@@ -4,8 +4,23 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+<style>
+.glow-text {
+    text-shadow: 2px 2px 8px rgba(255, 255, 0, 0.6); /* ombra leggera gialla */
+    letter-spacing: 1px;
+    animation: pulse 2.5s ease-in-out infinite;
+}
 
-<h1 class="text-center mb-4">Ora al cinema!</h1>
+@keyframes pulse {
+    0%   { text-shadow: 2px 2px 8px rgba(255, 255, 0, 0.6); }
+    50%  { text-shadow: 4px 4px 12px rgba(255, 255, 0, 1); }
+    100% { text-shadow: 2px 2px 8px rgba(255, 255, 0, 0.6); }
+}
+</style>
+
+<h1 class="text-center text-warning mb-4 display-4 fw-bold glow-text">
+    Ora al CiakCinema!
+</h1>
 
 <div class="row justify-content-center align-items-center">
     <!-- Carosello -->

@@ -49,53 +49,51 @@
 
     <!-- Paginazione -->
     {% if is_paginated %}
-    <nav>
+  {% with request.GET.urlencode as query_string %}
+    {% with query_string|cut:'page=' as qs_without_page %}
+      <nav>
         <ul class="pagination justify-content-center">
 
-            {# Link alla pagina precedente #}
-            {% if page_obj.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?{% if request.GET.titolo %}titolo={{ request.GET.titolo }}&{% endif %}
-                                                {% if request.GET.cast %}cast={{ request.GET.cast }}&{% endif %}
-                                                {% if request.GET.genere %}genere={{ request.GET.genere }}&{% endif %}
-                                                page={{ page_obj.previous_page_number }}">«</a>
-                </li>
-            {% else %}
-                <li class="page-item disabled"><span class="page-link">«</span></li>
-            {% endif %}
+          {# Pagina precedente #}
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?{{ qs_without_page }}&page={{ page_obj.previous_page_number }}">«</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">«</span></li>
+          {% endif %}
 
-            {# Link ai numeri di pagina #}
-            {% for num in paginator.page_range %}
-                {% if num == page_obj.number %}
-                    <li class="page-item active" aria-current="page">
-                        <span class="page-link">{{ num }}</span>
-                    </li>
-                {% else %}
-                    <li class="page-item">
-                        <a class="page-link" href="?{% if request.GET.titolo %}titolo={{ request.GET.titolo }}&{% endif %}
-                                                    {% if request.GET.cast %}cast={{ request.GET.cast }}&{% endif %}
-                                                    {% if request.GET.genere %}genere={{ request.GET.genere }}&{% endif %}
-                                                    page={{ num }}">{{ num }}</a>
-                    </li>
-                {% endif %}
-            {% endfor %}
-
-            {# Link alla pagina successiva #}
-            {% if page_obj.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?{% if request.GET.titolo %}titolo={{ request.GET.titolo }}&{% endif %}
-                                                {% if request.GET.cast %}cast={{ request.GET.cast }}&{% endif %}
-                                                {% if request.GET.genere %}genere={{ request.GET.genere }}&{% endif %}
-                                                page={{ page_obj.next_page_number }}">»</a>
-                </li>
+          {# Numeri di pagina #}
+          {% for num in paginator.page_range %}
+            {% if num == page_obj.number %}
+              <li class="page-item active">
+                <span class="page-link">{{ num }}</span>
+              </li>
             {% else %}
-                <li class="page-item disabled"><span class="page-link">»</span></li>
+              <li class="page-item">
+                <a class="page-link" href="?{{ qs_without_page }}&page={{ num }}">{{ num }}</a>
+              </li>
             {% endif %}
+          {% endfor %}
+
+          {# Pagina successiva #}
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?{{ qs_without_page }}&page={{ page_obj.next_page_number }}">»</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">»</span></li>
+          {% endif %}
 
         </ul>
-    </nav>
-
+      </nav>
+    {% endwith %}
+  {% endwith %}
 {% endif %}
+
+
+
+
 {% endblock %}
 {% block extra_js %}
 <script src="{% static 'js/autocomplete.js' %}"></script>

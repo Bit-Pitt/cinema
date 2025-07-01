@@ -52,8 +52,6 @@ def load_film():
         film.durata = film_dict.get('durata', 0)
         film.genere = film_dict.get('genere', '')
         film.save()
-    
-
 
 def load_sale():
     path = os.path.join(os.path.dirname(__file__), "Jsons", "sale.json")   
@@ -62,12 +60,17 @@ def load_sale():
         sale = json.load(file)
 
     for sala_dict in sale:
-        sala = Sala()
-        sala.nome = sala_dict['nome']
-        sala.numero_posti = sala_dict['numero_posti']
-        sala.file = sala_dict['file']
-        sala.posti_per_fila = sala_dict['posti_per_fila']
-        sala.save() 
+        posti_per_fila_lista_str = sala_dict['posti_per_fila_lista']
+        # Converte la stringa  lista Python
+        posti_per_fila = json.loads(posti_per_fila_lista_str)
+
+        sala = Sala(
+            nome=sala_dict['nome'],
+            numero_posti=sum(posti_per_fila), 
+            posti_per_fila_lista=posti_per_fila_lista_str
+        )
+        sala.save()
+
 
 
 # Genero 30 date casuali tra le 4 e le 11 di questa settimana e la prossima 

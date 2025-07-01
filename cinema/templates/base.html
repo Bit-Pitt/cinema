@@ -19,28 +19,36 @@
         body {
             font-family: 'Poppins', sans-serif;
         }
+        .hover-grow:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+        }
+
     </style>
 </head>
 
 <body class="d-flex flex-column min-vh-100" style="background-color: #002b49; color: white;">
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg" style="background-color: #001f33; padding: 1.2rem 0;">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center text-warning fs-3 fw-semibold" href="{% url 'film:homepage' %}">
-                <i class="bi bi-film me-2" style="font-size: 2rem;"></i> Ciak Cinema
+    <nav class="navbar navbar-expand-lg shadow-sm" style="background-color: #001f33; padding: 1.2rem 0;">
+            <div class="container">
+            <a class="navbar-brand d-flex align-items-center text-warning fs-3 fw-semibold hover-grow"
+            href="{% url 'film:homepage' %}">
+            <i class="bi bi-film me-2" style="font-size: 2rem;"></i> Ciak Cinema
             </a>
+
             <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav gap-3 fs-5">      <!-- Per l'utente moderatore gli diamo questo "dropdown"-->
+                <ul class="navbar-nav gap-3" style="font-size: 1rem;">
+                    <!-- Per l'utente moderatore gli diamo questo "dropdown"-->
                     {% if request.user.is_authenticated and request.user.profiloutente.is_moderatore %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Moderazione</a>
+                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">Moderazione</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'utenti:lista_commenti' %}">Commenti</a></li>
-                            <!-- Altri elementi verranno qui (discussioni, messaggi) -->
+                            <li><a class="dropdown-item" href="{% url 'utenti:seleziona_film' %}">Commenti</a></li>
+                            <li><a class="dropdown-item" href="{% url 'utenti:lista_discussioni_mod' %}">Discussioni Forum</a></li>
                         </ul>
                     </li>
                     {% endif %}
@@ -72,6 +80,9 @@
                         <a class="nav-link text-white" href="{% url 'utenti:signup' %}?next={% url 'utenti:abbonati' %}">Abbonati</a>
                     {% endif %}
                     </li>
+                    {% if user.is_authenticated%}
+                        <li><a class="nav-link text-white" href="{% url 'film:statistiche_film' %}">Statistiche</a></li>
+                    {% endif %}
 
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{% url 'utenti:lista_discussioni' %}">Forum</a>
@@ -104,6 +115,10 @@ rgb(198, 192, 255)
                                             Utente Gold
                                         {% elif abbonamento == 'silver' %}
                                             Utente Silver
+                                        {% elif user.is_staff %}
+                                            Utente staff
+                                        {% elif request.user.profiloutente.is_moderatore %}
+                                            Utente moderatore
                                         {% else %}
                                             Utente Base
                                         {% endif %}
@@ -139,6 +154,7 @@ rgb(198, 192, 255)
             </div>
         </div>
     </nav>
+
     {% if messages %}               <!-- Questo gestisce i messaggi di successo etc ... -->
     <div class="container mt-3">
         {% for message in messages %}

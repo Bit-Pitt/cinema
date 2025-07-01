@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h3 class="text-danger">Sei sicuro di voler eliminare questa discussione?</h3>
+    <p><strong>{{ object.titolo }}</strong></p>
+    <form method="post">{% csrf_token %}
+        <button type="submit" class="btn btn-danger">Conferma eliminazione</button>
+        <a href="{% url 'utenti:lista_discussioni_mod' %}" class="btn btn-secondary">Annulla</a>
+    </form>
+</div>
+{% endblock %}

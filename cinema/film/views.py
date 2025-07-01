@@ -3,7 +3,7 @@ from django.utils import timezone
 from random import sample
 from datetime import  timedelta
 from .models import *
-from utenti.models import Rating
+from utenti.models import *
 from itertools import islice
 from django.views.generic import *
 from .utils import *
@@ -11,6 +11,8 @@ import re
 from django.core.paginator import Paginator
 from django.urls import reverse_lazy
 from .forms import *
+from django.db.models import Avg, Count
+from itertools import zip_longest
 
 # rimuove spazi multipli che non porterebbero a dei match
 def normalizza_spazi(s):
@@ -52,11 +54,11 @@ def home(request):
     # Aggiungi l'attributo immagine_genere (dinamico non persistente) per ogni film
     for film in film_in_evidenza:
         film.immagine_genere = collega_film_immagine(film.genere)
-
+    
     for chunk in film_in_uscita:        #bisogna iterare per ogni tripla (chunk)
         for film in chunk:
             film.immagine_genere = collega_film_immagine(film.genere)
-
+    
     return render(request, template_name=template, context={
         "film_in_evidenza": film_in_evidenza,
         "film_in_uscita": film_in_uscita,
@@ -80,7 +82,6 @@ class DetailFilmView(DetailView):
 
         # Verifica proiezioni nella settimana corrente
         oggi = timezone.now().date()
-        print(f"------------------------DATA ATTUALE: {oggi}")
         fine_settimana = oggi + timedelta(days=7)
         context['proiezione_questa_settimana'] = Proiezione.objects.filter(
             film=film,
@@ -104,7 +105,7 @@ class DetailFilmView(DetailView):
                 'conteggio': count,
                 'percentuale': round(percentuale, 1)
             })
-        print(distribuzione_voti)
+        
         context['distribuzione_voti'] = distribuzione_voti
         context['totale_voti'] = totale_voti
 
@@ -191,7 +192,6 @@ class FilmUpdateView(UpdateView):
     form_class = FilmForm
     template_name = 'CRUD/film_form.html'
     success_url = reverse_lazy('film:homepage')
-
     #Perchè condivide il template con la ListView (modificaView)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -229,6 +229,8 @@ class ProiezioneCreateView(CreateView):
     form_class = ProiezioneForm
     template_name = 'CRUD/proiezione_form.html'
     success_url = reverse_lazy('film:homepage')
+
+    
 
 # Il form è condiviso con la createView ecco perchè passo al contesto nome_view (per disambiguare i casi)
 class ProiezioneUpdateView(UpdateView):
@@ -272,6 +274,60 @@ class ProiezioneDeleteView(DeleteView):
 #View per l'opzione "Dove siamo" della navigation bar
 def dove_siamo(request):
     return render(request, 'dove_siamo.html')
+
+
+# View per la sezione statistiche, ottiene:
+# Lista di film popolari: [somma normalizzata di valori [0,1] per MediaRating + Rating/TotRating) + commenti/TotCommenti]
+# Raggruppamento per 3 tramite IterTools (zipLongest)
+def group_film_in_tre(lista):
+    """Gruppi di 3 per carousel Bootstrap"""
+    return [list(filter(None, gruppo)) for gruppo in zip_longest(*[iter(lista)]*3)]
+
+def statistiche_film(request):
+    # Annotazioni base  ,  "Avg,Count" offerti da django
+    film_stats = Film.objects.annotate(
+        media_rating=Avg('ratings__voto'),
+        numero_rating=Count('ratings'),
+        numero_commenti=Count('commenti')
+    )
+
+    # Totali globali per normalizzazione
+    totale_rating = Rating.objects.count() or 1
+    totale_commenti = Commento.objects.count() or 1
+
+    # Calcolo film popolari (media ponderata con valori normalizzati [0,1])
+    film_popolari = sorted(
+        film_stats,
+        key=lambda film: (
+            ((film.media_rating or 0) / 5) +
+            (film.numero_rating / totale_rating) +
+            (film.numero_commenti / totale_commenti)
+        ),
+        reverse=True
+    )[:12]              #Prendo i primi 12
+
+    # Top rating medio
+    film_rating_alto = film_stats.order_by('-media_rating')[:12]
+
+    # Film con più commenti
+    film_commentati = film_stats.order_by('-numero_commenti')[:12]
+
+    # Devo sempre aggiungere il genere ad ogni film
+    for film in film_popolari:
+        film.immagine_genere = collega_film_immagine(film.genere)
+    for film in film_rating_alto:
+        film.immagine_genere = collega_film_immagine(film.genere)
+    for film in film_commentati:
+        film.immagine_genere = collega_film_immagine(film.genere)
+
+    context = {
+        'film_popolari': group_film_in_tre(film_popolari),
+        'film_rating_alto': group_film_in_tre(film_rating_alto),
+        'film_commentati': group_film_in_tre(film_commentati),
+    }
+    
+    return render(request, 'statistiche.html', context)
+
 
 
 

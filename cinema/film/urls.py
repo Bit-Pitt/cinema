@@ -28,5 +28,9 @@ urlpatterns = [
     #Opzione della navBar
     path('dove-siamo/', dove_siamo, name='dove_siamo'),
 
+    #Statistiche
+    path('statistiche/', statistiche_film, name='statistiche_film'),
+
+
 ]
 

@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path,include
 from django.shortcuts import redirect
-from .initcmds import init_db,erase_db
+from .initcmds import *
 from utenti.views import disattiva_abbonamenti
 
 urlpatterns = [
@@ -28,7 +28,7 @@ urlpatterns = [
 ]
 
 
-erase_db()
-init_db()
+#erase_db()
+#init_db()
 disattiva_abbonamenti()
 

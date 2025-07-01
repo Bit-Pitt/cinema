@@ -223,23 +223,87 @@ def disattiva_abbonamenti():
         print(f"Abbonamento scaduto per: {profilo.user.username}")
 
 
-# Adesso funzioni per i Moderatori
+# Adesso funzioni per i Moderatori  
 
-# Lista dei commenti (per moderatori)
-class CommentoListView(ListView):
+
+#Per moderare commenti sui film: 
+# ListView per scegliere i film
+# ListView per scegliere il commento da eliminare e deleteview per eliminarlo
+
+# View per selezionare un film
+class FilmModerazioneListView(ListView):
+    model = Film
+    template_name = 'moderazione/seleziona_film.html'
+    context_object_name = 'film_list'
+    ordering = ['titolo']
+
+
+# Lista dei commenti per un film
+class CommentiPerFilmListView(ListView):
     model = Commento
-    template_name = 'moderazione/commento_list.html'
+    template_name = 'moderazione/commenti_per_film.html'
     context_object_name = 'commenti'
-    ordering = ['film__titolo', 'utente__username']  # ordinamento alfabetico per film e utente
+
+    def get_queryset(self):
+        self.film = get_object_or_404(Film, pk=self.kwargs['film_id'])
+        return Commento.objects.filter(film=self.film).order_by('utente__username')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['film'] = self.film
+        return context
 
 # DeleteView per commento
 class CommentoDeleteView(DeleteView):
     model = Commento
     template_name = 'moderazione/commento_confirm_delete.html'
-    success_url = reverse_lazy('moderazione:lista_commenti')
+    def get_success_url(self):
+        film_id = self.object.film.id
+        return reverse_lazy('utenti:commenti_per_film', kwargs={'film_id': film_id})
+
+
+
+# Ora le view per Eliminare una discussione (ListView+DeleteView)
+# e per eliminare un msg (ListView+Deleteview) <-- listView dei msg ci si arriva dalla listView delle discussioni
+
+# Lista discussioni (moderazione)
+class DiscussioneListView(ListView):
+    model = Discussione
+    template_name = 'moderazione/discussione_list_mod.html'
+    context_object_name = 'discussioni'
+    ordering = ['titolo']
+
+# Visualizza messaggi per una discussione
+class MessaggiPerDiscussioneView(ListView):
+    model = Messaggio
+    template_name = 'moderazione/messaggi_per_discussione.html'
+    context_object_name = 'messaggi'
+
+    def get_queryset(self):
+        return Messaggio.objects.filter(discussione_id=self.kwargs['pk']).order_by('data_invio')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['discussione'] = Discussione.objects.get(pk=self.kwargs['pk'])
+        return context
+
+# DeleteView discussione
+class DiscussioneDeleteView(DeleteView):
+    model = Discussione
+    template_name = 'moderazione/discussione_confirm_delete.html'
+    success_url = reverse_lazy('utenti:lista_discussioni_mod')
+
+# DeleteView messaggio
+class MessaggioDeleteView(DeleteView):
+    model = Messaggio
+    template_name = 'moderazione/messaggio_confirm_delete.html'
+
+    def get_success_url(self):
+        return reverse_lazy('utenti:messaggi_per_discussione', kwargs={'pk': self.object.discussione.pk})
 
 
 
 
+    
 
 

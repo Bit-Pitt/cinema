@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-warning mb-4">Moderazione Discussioni</h2>
+
+    {% for discussione in discussioni %}
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">{{ discussione.titolo }}</h5>
+                <p class="card-text">
+                    Creato da: <strong>{{ discussione.utente.username }}</strong><br>
+                    Ultimo messaggio: {{ discussione.ultimo_messaggio_data|date:"d/m/Y H:i" }}
+                </p>
+                <a href="{% url 'utenti:messaggi_per_discussione' discussione.pk %}" class="btn btn-outline-primary btn-sm">
+                    Visualizza messaggi
+                </a>
+                <a href="{% url 'utenti:discussione_delete' discussione.pk %}" class="btn btn-danger btn-sm">
+                    Elimina discussione
+                </a>
+            </div>
+        </div>
+    {% empty %}
+        <div class="alert alert-info">Nessuna discussione trovata.</div>
+    {% endfor %}
+</div>
+{% endblock %}

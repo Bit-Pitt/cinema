@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <div class="alert alert-danger shadow-sm">
+        <h4 class="alert-heading">Conferma eliminazione messaggio</h4>
+        <p>
+            Sei sicuro di voler eliminare questo messaggio scritto da <strong>{{ object.utente.username }}</strong> 
+            nella discussione <strong>"{{ object.discussione.titolo }}"</strong>?
+        </p>
+        <p class="fst-italic border p-2 bg-light">{{ object.contenuto }}</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-flex gap-2 mt-3">
+                <button type="submit" class="btn btn-danger">Elimina</button>
+                <a href="{% url 'utenti:messaggi_per_discussione' object.discussione.pk %}" class="btn btn-secondary">Annulla</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

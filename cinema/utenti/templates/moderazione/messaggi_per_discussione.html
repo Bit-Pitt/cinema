@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-warning mb-4">Messaggi in: "{{ discussione.titolo }}"</h2>
+
+    {% for msg in messaggi %}
+        <div class="list-group mb-2">
+            <div class="list-group-item d-flex justify-content-between align-items-start">
+                <div>
+                    <strong>{{ msg.utente.username }}</strong> — 
+                    <small class="text-muted">{{ msg.data_invio|date:"d/m/Y H:i" }}</small><br>
+                    {{ msg.contenuto }}
+                </div>
+                <a href="{% url 'utenti:messaggio_delete' msg.pk %}" class="btn btn-sm btn-danger ms-3">
+                    <i class="bi bi-trash"></i> Elimina
+                </a>
+            </div>
+        </div>
+    {% empty %}
+        <div class="alert alert-info">Nessun messaggio in questa discussione.</div>
+    {% endfor %}
+
+    <a href="{% url 'utenti:lista_discussioni_mod' %}" class="btn btn-secondary mt-4">
+        <i class="bi bi-arrow-left"></i> Torna alle discussioni
+    </a>
+</div>
+{% endblock %}

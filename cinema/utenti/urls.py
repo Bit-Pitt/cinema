@@ -25,8 +25,13 @@ urlpatterns = [
     path('attiva_abbonamento/', attiva_abbonamento, name='attiva_abbonamento'),
 
     #View per i moderatori
-    path('commenti/', CommentoListView.as_view(), name='lista_commenti'),
-    path('commento/<int:pk>/elimina/', CommentoDeleteView.as_view(), name='elimina_commento'),
+    path('commenti/', FilmModerazioneListView.as_view(), name='seleziona_film'),
+    path('commenti/<int:film_id>/', CommentiPerFilmListView.as_view(), name='commenti_per_film'),
+    path('commenti/delete/<int:pk>/', CommentoDeleteView.as_view(), name='commento_delete'),
+    path('discussioni/', DiscussioneListView.as_view(), name='lista_discussioni_mod'),
+    path('discussioni/<int:pk>/messaggi/', MessaggiPerDiscussioneView.as_view(), name='messaggi_per_discussione'),
+    path('discussione/<int:pk>/elimina/', DiscussioneDeleteView.as_view(), name='discussione_delete'),
+    path('messaggio/<int:pk>/elimina/', MessaggioDeleteView.as_view(), name='messaggio_delete'),
 
 ]
 

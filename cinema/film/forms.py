@@ -21,4 +21,8 @@ class ProiezioneForm(forms.ModelForm):
         widgets = {     #Specifico il widget per avere il campo di input adatto alle date
             'data_ora': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
         }
+    #Per ordinare per titolo
+    def __init__(self, *args, **kwargs):
+        super(ProiezioneForm, self).__init__(*args, **kwargs)
+        self.fields['film'].queryset = Film.objects.order_by('titolo')
 

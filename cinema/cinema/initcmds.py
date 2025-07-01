@@ -6,7 +6,8 @@ import random
 from django.utils import timezone
 from django.contrib.auth.models import User
 from utenti.models import *
-
+from prenotazioni.models import Prenotazione
+from django.utils.timezone import now
 
 
 
@@ -21,14 +22,13 @@ def erase_db():
     Discussione.objects.all().delete()
     Messaggio.objects.all().delete()
     ProfiloUtente.objects.all().delete()
-
-
+    Prenotazione.objects.all().delete()
 
 
 def init_db():
+
     if len(Film.objects.all()) != 0:
         return
-    
     load_film()  
     load_sale()    
     load_proiezioni()
@@ -37,6 +37,10 @@ def init_db():
     crea_ratings()
     load_forum()
     crea_staff()
+    crea_prenotazioni()
+
+
+
 
 def load_film():
     path = os.path.join(os.path.dirname(__file__), "Jsons", "film.json")   
@@ -369,6 +373,112 @@ def crea_staff():
             profilo = ProfiloUtente.objects.get(user=user)
             profilo.is_moderatore = True
             profilo.save()
+
+
+# Applica uno scoto del 10% per utenti silver, 20% per gold, utilizzando "Decimal" per coerenza con il modello
+# Anche se per come è il prezzo unitario e lo sconto, il risultato sarà sempre intero
+from decimal import Decimal, ROUND_HALF_UP
+
+def calcola_prezzo(utente, num_posti):
+    base = Decimal('10.00') * num_posti
+    profilo = getattr(utente, 'profiloutente', None)
+    if not profilo:
+        return base.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+
+    sconto = Decimal('0.00')
+    abbonamento = profilo.abbonamento.lower()
+    if abbonamento == 'silver':
+        sconto = Decimal('0.10')
+    elif abbonamento == 'gold':
+        sconto = Decimal('0.20')
+
+    prezzo_finale = base * (Decimal('1.00') - sconto)
+    return prezzo_finale.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+
+
+
+# Crea prenotazioni
+'''
+prende tutte le proiezioni di questa settimana
+per ogni proiezione cicla sulle file della sala
+per ogni fila calcola un numero casuale di posti da prenotare (tra 0 e la lunghezza della fila)
+applica uno "shift" casuale (così che i posti non siano tutti a partire dal primo posto della fila) 
+crea una prenotazione assegnando l'utente corrispondente (utente1, utente2, ..., utente16 per la fila centrale gold)
+usa la lista di posti contigui generata
+salva la prenotazione <-- calcolando il prezzo tramite la funzione apposita
+'''
+def crea_prenotazioni():
+    oggi = now().date()
+    settimana_fine = oggi + timedelta(days=7)
+
+    # Filtra le proiezioni di questa settimana
+    proiezioni = Proiezione.objects.filter(   #prendo proiezioni di questa week
+        data_ora__date__gte=oggi,
+        data_ora__date__lte=settimana_fine,
+    ).select_related('sala')
+
+    for proiezione in proiezioni:
+        sala = proiezione.sala
+        lista_posti_per_fila = json.loads(sala.posti_per_fila_lista)
+
+        # Calcolo fila centrale zero-based
+        num_file = len(lista_posti_per_fila)
+        if num_file % 2 == 0:
+            fila_centrale = num_file // 2 - 1
+        else:
+            fila_centrale = num_file // 2
+
+        posti_assegnati = set()
+
+        # Ho quindi  se lista..=[10,10,15] -->  (0,10) (1,10) (2,15)
+        for i, posti_fila in enumerate(lista_posti_per_fila):
+            # Numero casuale di posti da prenotare in questa fila
+            num_posti = random.randint(0, posti_fila)
+            if num_posti == 0:
+                continue
+
+            # Calcolo shift per spostare la sequenza
+            max_shift = posti_fila - num_posti
+            shift = random.randint(0, max_shift)
+
+            # Calcolo i posti (contigui) da prenotare, ricordando che i posti sono 1-based e cumulativi sulla sala
+            # Quindi se posti  [10,10,15] e sono nella seconda fila con num_posti=2 e shift=1:
+            # I posti saranno  10+1+1 ==> dal 12° al 13°   [CORRETTO]
+            start_posto = sum(lista_posti_per_fila[:i]) + 1 + shift
+            posti_prenotati = list(range(start_posto, start_posto + num_posti))
+
+            # Salta se c'è sovrapposizione con posti già assegnati 
+            # Nota che in realtà non possono esserci sovrapposizioni se il funzionamento è quello aspettato
+            if any(p in posti_assegnati for p in posti_prenotati):
+                print("------ ATTENZIONE: posto già prenotato")
+                continue  # salta questa prenotazione, per semplicità
+                
+            posti_assegnati.update(posti_prenotati)
+
+            # Se fila centrale usa utente gold "utente16" altrimenti utenti "utente1".."utenteN"
+            if i == fila_centrale:
+                username = 'utente16'       #sappiamo essere gold da load_utenti()
+            else:
+                # utenti da 1 a 15 (o quanti vuoi), cicla con modulo per esempio
+                idx_utente = i+1 
+                username = f'utente{idx_utente}'
+
+            try:        #Non dovrebbero esserci problemi
+                utente = User.objects.get(username=username)
+            except User.DoesNotExist:
+                print(f"Utente {username} non trovato, salto prenotazione fila {i}")
+                continue
+
+            # Creazione della prenotazione
+            prenotazione = Prenotazione(
+                utente=utente,
+                proiezione=proiezione,
+                prezzo= calcola_prezzo(utente,num_posti),
+                posti=json.dumps(posti_prenotati),      #Perchè il modello ha un "TextField"
+            )
+            prenotazione.save()
+            print(f"Prenotazione creata per {username} fila {i+1} posti {posti_prenotati} proiezione {proiezione}")
+
 
 
     

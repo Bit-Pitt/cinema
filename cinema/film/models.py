@@ -34,6 +34,7 @@ class Sala(models.Model):
     class Meta:
         verbose_name_plural = "Sale"
 
+    #Chiamato in automatico perchè fatto override di "save()"
     def clean(self):
         print("----Validazione sala")
         try:
@@ -56,6 +57,10 @@ class Sala(models.Model):
             return json.loads(self.posti_per_fila_lista)
         except json.JSONDecodeError:
             return []
+    
+    def save(self, *args, **kwargs):
+        self.clean()  # chiamata esplicita della validazione
+        super().save(*args, **kwargs)
 
 
 
@@ -73,7 +78,7 @@ class Proiezione(models.Model):
         verbose_name_plural = "Proiezioni"
         ordering = ["data_ora"]
 
-    #VALIDAZIONE: 
+    #VALIDAZIONE:   (automatica perchè override di save())
     # Non posso aggiungere una proiezione nel passato / futuro > 2 settimane
     # - non posso aggiungere una proiezione in una sala occupata
     def clean(self):

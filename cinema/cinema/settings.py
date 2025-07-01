@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'film',
-    'utenti.apps.UtentiConfig',  
+    'utenti.apps.UtentiConfig', 
+    'prenotazioni', 
     'crispy_forms',
     'crispy_bootstrap5',
 ]

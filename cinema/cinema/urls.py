@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("films/", include("film.urls")),
     path("accounts/", include("utenti.urls")),
+    path("prenotazioni/",include("prenotazioni.urls")),
     re_path(r'$^|$/^', lambda request: redirect('film:homepage')), 
 ]
 

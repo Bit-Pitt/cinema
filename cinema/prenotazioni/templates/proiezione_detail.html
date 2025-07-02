@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>{{ proiezione.film.titolo }} - {{ proiezione.data_ora|date:"d/m/Y H:i" }}</h2>
+<h5>Sala: {{ proiezione.sala.nome }}</h5>
+
+<div id="sala-container" class="mb-4 mt-3"></div>
+
+<form method="post" id="prenotazione-form" action="{% url 'prenotazioni:crea-prenotazione' proiezione.pk %}">
+{% csrf_token %}
+  <input type="hidden" name="posti" id="posti-input" />
+  <button type="submit" class="btn btn-success">Conferma Prenotazione</button>
+</form>
+
+<!-- Inserisco questo div nascosto per far si che lo script Js possa accedervi-->
+<div id="datiSala"
+     data-posti-per-fila='{{ posti_per_fila|safe }}'
+     data-posti-occupati='{{ posti_occupati|safe }}'>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/posti.js' %}"></script>
+{% endblock %}

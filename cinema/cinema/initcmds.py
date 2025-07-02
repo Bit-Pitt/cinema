@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from utenti.models import *
 from prenotazioni.models import Prenotazione
 from django.utils.timezone import now
-
+from prenotazioni.views import *
 
 
 def erase_db():
@@ -375,25 +375,6 @@ def crea_staff():
             profilo.save()
 
 
-# Applica uno scoto del 10% per utenti silver, 20% per gold, utilizzando "Decimal" per coerenza con il modello
-# Anche se per come è il prezzo unitario e lo sconto, il risultato sarà sempre intero
-from decimal import Decimal, ROUND_HALF_UP
-
-def calcola_prezzo(utente, num_posti):
-    base = Decimal('10.00') * num_posti
-    profilo = getattr(utente, 'profiloutente', None)
-    if not profilo:
-        return base.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
-
-    sconto = Decimal('0.00')
-    abbonamento = profilo.abbonamento.lower()
-    if abbonamento == 'silver':
-        sconto = Decimal('0.10')
-    elif abbonamento == 'gold':
-        sconto = Decimal('0.20')
-
-    prezzo_finale = base * (Decimal('1.00') - sconto)
-    return prezzo_finale.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
 
 
 

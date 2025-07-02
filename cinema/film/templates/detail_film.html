@@ -43,7 +43,8 @@
 {% if user.is_authenticated %}
     <!-- Bottone "prenota" che compare solo se è presente una proiezione questa settimana -->
     {% if proiezione_questa_settimana %}
-        <button type="button" class="btn btn-success mt-3">
+        <button type="button" class="btn btn-success mt-3"
+                onclick="location.href='{% url 'prenotazioni:proiezioni-list' %}'">
             Prenota
         </button>
     {% endif %}

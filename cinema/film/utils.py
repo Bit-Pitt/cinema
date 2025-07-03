@@ -2,12 +2,12 @@ from prenotazioni.models import Prenotazione
 from film.models import Film, Proiezione
 from collections import defaultdict
 from django.utils.timezone import now, timedelta
-
+from utenti.models import Rating
 
 # FUNZIONE CHE IMPLEMENTA IL SISTEMA DI RACCOMANDAZIONE User-based binario (film visto 1, 0 altrimenti)
-# e utilizzo di cosine similarity
+# e utilizzo di cosine similarity  --> Con peso in caso di rating dell'utente!
 # Nello specifico, lo score di ogni film non visto per l'utente "user_corrente":
-# - somma delle sim(User_corrente,User_j) se user_j ha visto il film  /   tot_utenti_che hanno visto il film
+# - somma delle sim(User_corrente,User_j)*peso_rating se user_j ha visto il film  /   tot_utenti_che hanno visto il film
 # Se "ora_al_cinema" allora filtrerà solo per i film che hanno proiezioni future
 def get_raccomandazioni_utente(user_corrente, top_n=9,ora_al_cinema=False):
     oggi = now()
@@ -39,15 +39,34 @@ def get_raccomandazioni_utente(user_corrente, top_n=9,ora_al_cinema=False):
     punteggi_film = defaultdict(float)          #dizionario con chiave:float (punteggio)
     somma_sim = defaultdict(float)
 
+
+    # Carica i rating in memoria: { (utente_id, film_id): voto }
+    # Prima carico in forma di lista
+    # Poi creo il dizionario per essere agevolmente acceduto dopo
+    ratings = Rating.objects.all().values_list('utente_id', 'film_id', 'voto')
+    rating_map = {(u, f): v for u, f, v in ratings}
+
+    # Funzione per trasformare voto in peso
+    def peso_voto(voto):
+        return {
+            1: 0.2,
+            2: 0.5,
+            3: 1,
+            4: 1.5,
+            5: 2
+        }.get(voto, 1)  # Default a 1 se non trovato (non dovrebbe accadere)
+
     #Srotolo "similarità_utenti" che è fatto ad es:
     #  {  utente1: 0.34 , utente2: 0.52 ... }
     # Adesso per ogni film visto da utente_j (user_film_map[altro_id])
-    #   Se il film non è stato già visto dall'utente corrente: sommo la similarità allo score di questo film non visto
+    #   Se il film non è stato già visto dall'utente corrente: sommo la similarità (*moltiplicatore) allo score di questo film non visto
     for altro_id, sim in similarita_utenti.items():
         for film_id in user_film_map[altro_id]:
-            if film_id not in film_corrente:
-                punteggi_film[film_id] += sim
-                somma_sim[film_id] += 1  
+            if film_id not in film_corrente:  # film non ancora visto da utente corrente
+                voto = rating_map.get((altro_id, film_id), None)    #controllo se "altro_id" ha votato
+                moltiplicatore = peso_voto(voto) if voto is not None else 1
+                punteggi_film[film_id] += sim * moltiplicatore  # sim pesata per il voto
+                somma_sim[film_id] += 1
                 
     # somma_sim == > ci serve perchè lo score finale del film sarà:  somma_similarità_altri_utenti / num di utenti che hanno partecipato allo score
     # così che sarà vincente il film che ha avuto la somma di similarità medie più alte!

@@ -33,6 +33,10 @@ urlpatterns = [
     path('discussione/<int:pk>/elimina/', DiscussioneDeleteView.as_view(), name='discussione_delete'),
     path('messaggio/<int:pk>/elimina/', MessaggioDeleteView.as_view(), name='messaggio_delete'),
 
+
+    # View per mostrare il profilo
+    path('profilo/', ProfiloView.as_view(), name='profilo'),
+
 ]
 
 

@@ -72,7 +72,8 @@ def validate_posti_gold(prenotazione):
 
     if prenota_posto_gold:
         profilo = ProfiloUtente.objects.get(user=prenotazione.utente)
-        if profilo.abbonamento.lower() != 'gold':
-            raise ValidationError("Solo utenti Gold possono prenotare posti nella fila centrale.")
+        if not (profilo.abbonamento.lower() == 'gold' or prenotazione.utente.is_staff):
+            raise ValidationError("ATTENZIONE: Solo utenti Gold o membri dello staff possono prenotare posti nella fila centrale.")
+
 
 

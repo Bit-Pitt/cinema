@@ -8,6 +8,11 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
+from cinema.mixin import *    #Per importare i miei mixin Staff/Moderatore
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+
 
 # Create your views here.
 
@@ -37,7 +42,7 @@ def calcola_prezzo(utente, num_posti):
 
 # ListView per mostrare le proiezioni (pre prenotare), con potenziali filtri modellati grazie a 
 # get_queryset, se esiste il filtro lo applica
-class ProiezioneListView(ListView):
+class ProiezioneListView(LoginRequiredMixin,ListView):
     model = Proiezione
     template_name = 'proiezioni-list.html' 
     context_object_name = 'proiezioni'
@@ -101,7 +106,7 @@ class ProiezioneListView(ListView):
 
 
 # E' la view collegata alla proiezione, sarà renderata in modo dinamico tramite js
-class ProiezioneDetailView(DetailView):
+class ProiezioneDetailView(LoginRequiredMixin,DetailView):
     model = Proiezione
     template_name = 'proiezione_detail.html'
     context_object_name = 'proiezione'
@@ -124,7 +129,9 @@ class ProiezioneDetailView(DetailView):
 
 
 # View che si occupa di creare la prenotazione (dopo che l'utente ha selezionato i posti)
-class PrenotazioneCreateView(View):
+# E' di fatto una CBV, questo per il semplice motivo di implementare la ricezione tramite
+# metodo "post" con la funzione "post" 
+class PrenotazioneCreateView(LoginRequiredMixin,View):
     def post(self, request, pk):
         proiezione = get_object_or_404(Proiezione, pk=pk)
         posti = json.loads(request.POST.get('posti', '[]'))
@@ -148,3 +155,40 @@ class PrenotazioneCreateView(View):
         except ValidationError as e:
             messages.error(request, e.messages[0])
             return redirect('prenotazioni:proiezione-dettaglio', pk=pk)
+
+
+# Lo staff potrà accedere alle prenotazioni e eliminarle tramite queste due CBV
+class PrenotazioneListView(StaffRequiredMixin,ListView):
+    model = Prenotazione
+    template_name = 'prenotazione_list.html'
+    context_object_name = 'prenotazioni'
+    paginate_by = 20
+
+
+    def get_queryset(self):
+        qs = Prenotazione.objects.select_related('proiezione__film', 'utente')\
+            .order_by('proiezione__film__titolo', 'proiezione__data_ora')
+        
+        #Se ci sono i parametri filtrerà
+        film = self.request.GET.get('film')
+        utente = self.request.GET.get('utente')
+
+        if film:
+            qs = qs.filter(proiezione__film__titolo__icontains=film)
+        if utente:
+            qs = qs.filter(utente__username__iexact=utente)
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        #per non perdere l'informazione quando passi da una pagina all'altra
+        context['film_query'] = self.request.GET.get('film', '')
+        context['utente_query'] = self.request.GET.get('utente', '')
+        return context
+
+# basica deleteView per cancellare la prenotazione
+class PrenotazioneDeleteView(DeleteView):
+    model = Prenotazione
+    template_name = 'prenotazione_confirm_delete.html'
+    success_url = reverse_lazy('prenotazioni:prenotazione_list')

@@ -29,7 +29,9 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # LOGIN/LOGOUT redirect
-LOGIN_URL = "login"
+from django.urls import reverse_lazy
+
+LOGIN_URL = reverse_lazy('utenti:login')
 LOGIN_REDIRECT_URL = "film:homepage"  
 LOGOUT_REDIRECT_URL = "film:homepage"
 

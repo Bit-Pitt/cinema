@@ -61,9 +61,11 @@
                     <ul class="dropdown-menu" aria-labelledby="gestioneDropdown">
                         <li><a class="dropdown-item" href="{% url 'film:film_create' %}">Aggiungi film</a></li>
                         <li><a class="dropdown-item" href="{% url 'film:film_list_modifica' %}">Modifica film</a></li>
-                          <li><hr class="dropdown-divider"></li>
+                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{% url 'film:proiezione_create' %}">Aggiungi proiezione</a></li>
                         <li><a class="dropdown-item" href="{% url 'film:proiezione_list_modifica' %}">Modifica proiezione</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'prenotazioni:prenotazione_list' %}">Gestisci prenotazioni</a></li>
                     </ul>
                     </li>
                     {% endif %}             <!-- Il resto delle opzioni per tutti-->
@@ -124,7 +126,9 @@ rgb(198, 192, 255)
                                         {% endif %}
                                     </span>
                                 </li>
-                                <li><a class="dropdown-item" href="#">Profilo</a></li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'utenti:profilo' %}">👤Profilo</a>
+                                </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>        <!-- utilizzo del metodo post per sicurezza -->
                                 <form method="post" action="{% url 'utenti:logout' %}" style="margin: 0; padding: 0;">

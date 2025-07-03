@@ -13,6 +13,7 @@ from django.urls import reverse_lazy
 from .forms import *
 from django.db.models import Avg, Count
 from itertools import zip_longest
+from cinema.mixin import *  # mixin per staff e moderatore
 
 # rimuove spazi multipli che non porterebbero a dei match
 def normalizza_spazi(s):
@@ -48,8 +49,8 @@ def home(request):
     film_in_uscita = list(film_settimana_prossima)  
     film_in_uscita = list(chunked(film_in_uscita, 3))  
 
-      # Importa la funzione
-    from .utils import collega_film_immagine  # supponendo che la funzione sia in utils.py
+    # Importa la funzione
+    from .utils import collega_film_immagine  
 
     # Aggiungi l'attributo immagine_genere (dinamico non persistente) per ogni film
     for film in film_in_evidenza:
@@ -118,7 +119,7 @@ class DetailFilmView(DetailView):
         return context
 
 
-    
+# Utilizza SISTEMA DI RACCOMANDAZIONE quando non ci sono filtri attivi (su tutti i film db)
 # Implementa la funzione "Cerca Film" nella home page
 # Se ci si arriva per la prima volta mostra i raccomandati, altrimenti esegue le query
 class CercaFilmView(ListView):
@@ -132,14 +133,12 @@ class CercaFilmView(ListView):
         cast = normalizza_spazi(self.request.GET.get("cast", "").strip())
         genere = normalizza_spazi(self.request.GET.get("genere", "").strip())
 
-        # Nessun filtro:  (per ora 10 casuali)
+        # Nessun filtro:  Mostro i 12 raccomandati
         if not titolo and not cast and not genere:
-            all_ids = list(Film.objects.values_list("id", flat=True))
-            random_ids = sample(all_ids, min(10, len(all_ids)))
-            film_casuali = Film.objects.filter(id__in=random_ids)
-            for f in film_casuali:
+            film_raccomandati = get_raccomandazioni_utente(self.request.user,12)
+            for f in film_raccomandati:
                 f.immagine_genere = collega_film_immagine(f.genere)
-            return film_casuali
+            return film_raccomandati
 
         # Se qui allora ci sono dei parametri di ricerca
         queryset = Film.objects.all()
@@ -179,7 +178,7 @@ def autocomplete(request):
 
 
 # View per creare un film
-class FilmCreateView(CreateView):
+class FilmCreateView(StaffRequiredMixin,CreateView):
     model = Film
     form_class = FilmForm
     template_name = 'CRUD/film_form.html'
@@ -187,7 +186,7 @@ class FilmCreateView(CreateView):
 
 # CBV per la modifica di un film
 # Il form è condiviso con la createView ecco perchè passo al contesto nome_view (per disambiguare i casi)
-class FilmUpdateView(UpdateView):
+class FilmUpdateView(StaffRequiredMixin,UpdateView):
     model = Film
     form_class = FilmForm
     template_name = 'CRUD/film_form.html'
@@ -199,7 +198,7 @@ class FilmUpdateView(UpdateView):
         return context
 
 # ListView per scegliere il film da modificare (mostrata quando lo staff clicca su "modifica film")
-class FilmListModificaView(ListView):
+class FilmListModificaView(StaffRequiredMixin,ListView):
     model = Film
     template_name = 'CRUD/film_list_modifica.html'
     context_object_name = 'film_list'
@@ -210,7 +209,7 @@ class FilmListModificaView(ListView):
         context["nome_view"] = self.__class__.__name__
         return context
 
-class FilmDeleteView(DeleteView):
+class FilmDeleteView(StaffRequiredMixin,DeleteView):
     model = Film
     template_name = 'CRUD/confirm_delete.html'
     success_url = reverse_lazy('film:film_list_modifica')
@@ -224,7 +223,7 @@ class FilmDeleteView(DeleteView):
 
 #Procedo alla creazione delle 3 view analoghe ai Film per la Creazione/Modifica di Proiezioni
 # Analogamente a prima: form personalizzato
-class ProiezioneCreateView(CreateView):
+class ProiezioneCreateView(StaffRequiredMixin,CreateView):
     model = Proiezione
     form_class = ProiezioneForm
     template_name = 'CRUD/proiezione_form.html'
@@ -233,7 +232,7 @@ class ProiezioneCreateView(CreateView):
     
 
 # Il form è condiviso con la createView ecco perchè passo al contesto nome_view (per disambiguare i casi)
-class ProiezioneUpdateView(UpdateView):
+class ProiezioneUpdateView(StaffRequiredMixin,UpdateView):
     model = Proiezione
     form_class = ProiezioneForm
     template_name = 'CRUD/proiezione_form.html'
@@ -245,7 +244,7 @@ class ProiezioneUpdateView(UpdateView):
         return context
 
 
-class ProiezioneListModificaView(ListView):
+class ProiezioneListModificaView(StaffRequiredMixin,ListView):
     model = Proiezione
     template_name = 'CRUD/proiezione_list_modifica.html'
     context_object_name = 'proiezione_list'
@@ -259,7 +258,7 @@ class ProiezioneListModificaView(ListView):
         context["nome_view"] = self.__class__.__name__
         return context
     
-class ProiezioneDeleteView(DeleteView):
+class ProiezioneDeleteView(StaffRequiredMixin,DeleteView):
     model = Proiezione
     template_name = 'CRUD/confirm_delete.html'
     success_url = reverse_lazy('film:proiezione_list_modifica')

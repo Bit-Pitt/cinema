@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container text-white">
+  <h2 class="mb-4">🗑️ Elimina Prenotazione</h2>
+
+  <p>Sei sicuro di voler eliminare questa prenotazione?</p>
+
+  <ul>
+    <li><strong>Film:</strong> {{ object.proiezione.film.titolo }}</li>
+    <li><strong>Utente:</strong> {{ object.utente.username }}</li>
+    <li><strong>Data/Ora:</strong> {{ object.proiezione.data_ora|date:"d/m/Y H:i" }}</li>
+    <li><strong>Posti:</strong> {{ object.posti }}</li>
+  </ul>
+
+  <form method="post">{% csrf_token %}
+    <a href="{% url 'prenotazioni:prenotazione_list' %}" class="btn btn-secondary">Annulla</a>
+    <button type="submit" class="btn btn-danger">Elimina</button>
+  </form>
+</div>
+{% endblock %}

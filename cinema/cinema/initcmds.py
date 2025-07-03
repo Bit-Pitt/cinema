@@ -9,6 +9,8 @@ from utenti.models import *
 from prenotazioni.models import Prenotazione
 from django.utils.timezone import now
 from prenotazioni.views import *
+from django.contrib.auth.models import Group, User
+
 
 
 def erase_db():
@@ -38,6 +40,7 @@ def init_db():
     load_forum()
     crea_staff()
     crea_prenotazioni()
+    crea_assegna_gruppi()
 
 
 
@@ -77,10 +80,11 @@ def load_sale():
 
 
 
-# Genero 30 date casuali tra le 4 e le 11 di questa settimana e la prossima 
+# Genero 30 date casuali tra le 16.00 e le 23.00 di questa settimana e la prossima 
 # Assegno a 10 film le 30 date per questa settimana e altri 10 film le date della prossima
 # assegno una sala
 # salvo nel db
+# Estensione per sistema di raccomandazione: aggiunta di proiezioni passate
 def load_proiezioni():
     #genera una data casuale tra [start_date,end_date]
     def generate_random_datetime(start_date, end_date):
@@ -141,6 +145,40 @@ def load_proiezioni():
             except ValidationError as e:
                 print(f"Errore: {e} salto questa proiezione per il film '{film.titolo}'")
                 continue  
+
+                # --- PROIEZIONI PASSATE ---
+    past_start_date = current_date - timedelta(days=90)  # fino a 3 mesi fa
+    past_end_date = current_date - timedelta(days=1)     # fino a ieri
+
+    proiezioni_passate = []
+    for _ in range(90):
+        random_date = generate_random_datetime(past_start_date, past_end_date)
+        random_date = random_date.replace(hour=random.randint(start_time, end_time), minute=0, second=0, microsecond=0)
+        random_date = timezone.make_aware(random_date)
+        proiezioni_passate.append(random_date.isoformat())
+
+    #Prendo i primi 30 film nel db
+    film_misti = Film.objects.all()[:30]
+    for film in film_misti:
+        for _ in range(3):
+            if not proiezioni_passate:      #Mi fermo quando ho terminato le proiezioni passate
+                break
+            proiezione = Proiezione()
+            proiezione.film = film
+            proiezione.data_ora = proiezioni_passate.pop(0)         #ottiene la proiezione e la toglie dalla lista
+            proiezione.sala = random.choice(sale)
+            try:
+                proiezione.save()
+                print(f"---------- Aggiunta proiezione nel passato ")
+            except ValidationError as e:
+                print(f"Errore: {e} salto proiezione passata per '{film.titolo}'")
+                continue
+
+
+
+
+
+
 
 # La funzione crea 30 utenti, 5 gold, 15 silver, 10 basic (default)
 def crea_utenti():
@@ -380,7 +418,7 @@ def crea_staff():
 
 # Crea prenotazioni
 '''
-prende tutte le proiezioni di questa settimana
+prende tutte le proiezioni di questa settimana  <-- è tutte quelle passate per popolare il db per sistema di raccomandazioni
 per ogni proiezione cicla sulle file della sala
 per ogni fila calcola un numero casuale di posti da prenotare (tra 0 e la lunghezza della fila)
 applica uno "shift" casuale (così che i posti non siano tutti a partire dal primo posto della fila) 
@@ -392,9 +430,8 @@ def crea_prenotazioni():
     oggi = now().date()
     settimana_fine = oggi + timedelta(days=7)
 
-    # Filtra le proiezioni di questa settimana
-    proiezioni = Proiezione.objects.filter(   #prendo proiezioni di questa week
-        data_ora__date__gte=oggi,
+    # Filtra le proiezioni di questa settimana e le vecchie
+    proiezioni = Proiezione.objects.filter(   
         data_ora__date__lte=settimana_fine,
     ).select_related('sala')
 
@@ -438,11 +475,11 @@ def crea_prenotazioni():
 
             # Se fila centrale usa utente gold "utente16" altrimenti utenti "utente1".."utenteN"
             if i == fila_centrale:
-                username = 'utente16'       #sappiamo essere gold da load_utenti()
+                username = 'utente16'  #  #sappiamo essere gold da load_utenti()
             else:
-                # utenti da 1 a 15 (o quanti vuoi), cicla con modulo per esempio
-                idx_utente = i+1 
+                idx_utente = random.randint(1, 30)  # Assegna casualmente un utente tra 1 e 30
                 username = f'utente{idx_utente}'
+
 
             try:        #Non dovrebbero esserci problemi
                 utente = User.objects.get(username=username)
@@ -461,6 +498,30 @@ def crea_prenotazioni():
             print(f"Prenotazione creata per {username} fila {i+1} posti {posti_prenotati} proiezione {proiezione}")
 
 
+# la funzione Crea/Recupera i gruppi e inserisce nel gruppo i relativi utenti
+def crea_assegna_gruppi():
+    # Crea (o recupera) i gruppi
+    staff_group, _ = Group.objects.get_or_create(name="staff")
+    moderatori_group, _ = Group.objects.get_or_create(name="moderatori")
+
+    # Assegna utenti staff1, staff2, ..., staff5 al gruppo staff
+    for i in range(1, 6):
+        username = f"staff{i}"
+        try:
+            utente = User.objects.get(username=username)
+            utente.groups.add(staff_group)
+            print(f"Aggiunto {username} al gruppo 'staff'")
+        except User.DoesNotExist:
+            print(f"Utente {username} non trovato, salto.")
+
+    # Assegna utenti moderatore1, moderatore2, ..., moderatore5 al gruppo moderatori
+    for i in range(1, 6):
+        username = f"moderatori{i}"
+        try:
+            utente = User.objects.get(username=username)
+            utente.groups.add(moderatori_group)
+        except User.DoesNotExist:
+            print(f"Utente {username} non trovato, salto.")
 
     
             

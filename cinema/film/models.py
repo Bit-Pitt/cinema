@@ -84,9 +84,9 @@ class Proiezione(models.Model):
     def clean(self):
         print("-----------------Validazione della proiezione")
         ora_attuale = now()
-        # Blocco: impedisce date nel passato
-        if self.data_ora < ora_attuale:
-            raise ValidationError("Non puoi creare o modificare una proiezione con una data/ora nel passato.")
+        # Blocco: impedisce date nel passato  (commentato per inizializzare il db con proiezioni passate)
+        #if self.data_ora < ora_attuale:
+        #    raise ValidationError("Non puoi creare o modificare una proiezione con una data/ora nel passato.")
         if self.data_ora > ora_attuale + timedelta(weeks=2):
             raise ValidationError("Non puoi creare una proiezione oltre due settimane nel futuro.")
 

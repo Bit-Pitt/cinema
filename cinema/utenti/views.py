@@ -369,7 +369,7 @@ class ProfiloView(LoginRequiredMixin,TemplateView):
         oggi = now()
 
         # 1. Prenotazioni future ordinate dalla più vicina
-        fine_settimana = oggi + timedelta(days=7)
+        fine_settimana = oggi + timedelta(days=8)
         prenotazioni_settimana = Prenotazione.objects.filter(
             utente=utente,
             proiezione__data_ora__range=(oggi, fine_settimana)

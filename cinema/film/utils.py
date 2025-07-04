@@ -9,7 +9,8 @@ from utenti.models import Rating
 # Nello specifico, lo score di ogni film non visto per l'utente "user_corrente":
 # - somma delle sim(User_corrente,User_j)*peso_rating se user_j ha visto il film  /   tot_utenti_che hanno visto il film
 # Se "ora_al_cinema" allora filtrerà solo per i film che hanno proiezioni future
-def get_raccomandazioni_utente(user_corrente, top_n=9,ora_al_cinema=False):
+# Se debug=False anche se tutti i film hanno score=0 verranno consigliati dei film
+def get_raccomandazioni_utente(user_corrente, top_n=9,ora_al_cinema=False,debug=False):
     oggi = now()
 
     # Step 1: Costruisci {utente_id: set di film_id visti}
@@ -76,7 +77,8 @@ def get_raccomandazioni_utente(user_corrente, top_n=9,ora_al_cinema=False):
     raccomandazioni = []
     for film_id in punteggi_film:
         score = punteggi_film[film_id] / somma_sim[film_id]
-        raccomandazioni.append((film_id, score))
+        if score > 0 or debug==False:
+            raccomandazioni.append((film_id, score))
 
     #Faccio un sorting su queste tuple sulla base dello score (quindi il secondo argomento)
     raccomandazioni.sort(key=lambda x: x[1], reverse=True)
@@ -100,7 +102,7 @@ def get_raccomandazioni_utente(user_corrente, top_n=9,ora_al_cinema=False):
 
     # Potrei aver perso l'ordine dopo "list(....filter..)" quindi: ordina secondo la lista "film_ids" creata step 5
     film_raccomandati.sort(key=lambda f: film_ids.index(f.id))
-
+        
     return film_raccomandati
 
 

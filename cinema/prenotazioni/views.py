@@ -188,7 +188,7 @@ class PrenotazioneListView(StaffRequiredMixin,ListView):
         return context
 
 # basica deleteView per cancellare la prenotazione
-class PrenotazioneDeleteView(DeleteView):
+class PrenotazioneDeleteView(StaffRequiredMixin,DeleteView):
     model = Prenotazione
     template_name = 'prenotazione_confirm_delete.html'
     success_url = reverse_lazy('prenotazioni:prenotazione_list')

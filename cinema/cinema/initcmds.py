@@ -26,9 +26,12 @@ def erase_db():
     ProfiloUtente.objects.all().delete()
     Prenotazione.objects.all().delete()
 
-
+import sys
 def init_db():
-
+    
+    if  ('test' in sys.argv):
+        return 
+           
     if len(Film.objects.all()) != 0:
         return
     load_film()  

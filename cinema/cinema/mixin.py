@@ -1,10 +1,13 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.views import redirect_to_login
 from django.urls import reverse
+from django.core.exceptions import PermissionDenied
+
 
 
 
 # In questo fil definisco i miei mixin per Moderatore e Staff (evitando di installare una libreria a parte)
+# In realtà potevo risolvere già controllando l'attributo "is_staff" piuttosto che un gruppo
 class ModeratoreRequiredMixin(UserPassesTestMixin):
     def test_func(self):    #controllo se utente ha il gruppo "moderatori"
         return self.request.user.is_authenticated and self.request.user.groups.filter(name='moderatori').exists()
@@ -13,7 +16,6 @@ class ModeratoreRequiredMixin(UserPassesTestMixin):
         login_url = reverse('utenti:login') 
         return redirect_to_login(self.request.get_full_path(), login_url)
     
-
 # Analogo per staff
 class StaffRequiredMixin(UserPassesTestMixin):
     def test_func(self):
@@ -24,3 +26,5 @@ class StaffRequiredMixin(UserPassesTestMixin):
         # Redirige al login personalizzato con namespace corretto
         login_url = reverse('utenti:login')
         return redirect_to_login(self.request.get_full_path(), login_url)
+
+

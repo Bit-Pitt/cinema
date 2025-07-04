@@ -183,6 +183,9 @@ class FilmCreateView(StaffRequiredMixin,CreateView):
     form_class = FilmForm
     template_name = 'CRUD/film_form.html'
     success_url = reverse_lazy('film:homepage')  
+     
+  
+
 
 # CBV per la modifica di un film
 # Il form è condiviso con la createView ecco perchè passo al contesto nome_view (per disambiguare i casi)

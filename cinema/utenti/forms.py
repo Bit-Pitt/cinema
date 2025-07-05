@@ -2,15 +2,18 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import *
 from django import forms
 
-
 #Form di creazione dell'utente dato a gratis da "UserCreationForm"
 class CreaUtente(UserCreationForm):
     def save(self, commit=True):
-        user = super().save(commit) #ottengo un riferimento all'utente
-        #g = Group.objects.get(name="Lettori") #cerco il gruppo che mi interessa
-        #g.user_set.add(user) #aggiungo l'utente al gruppo
+        user = super().save(commit) 
         return user 
     
+# Form per l'aggiunta dell'immagine (gestito da django che il campo sia un "Image" nel modello)
+class ProfiloForm(forms.ModelForm):
+    class Meta:
+        model = ProfiloUtente
+        fields = ['immagine_profilo']
+
 
 # Form per creare una nuova discussione  (basterà ottenere il titolo --> utente e data automatici)
 class DiscussioneForm(forms.ModelForm):

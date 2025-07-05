@@ -20,6 +20,7 @@ from cinema.mixin import *      #Miei mixin
 
 
 
+
 # La classe sfrutta la "createView" cbv a cui associa il form in automatico, così come il template grazie a Django users
 class UserCreateView(CreateView):
     form_class = CreaUtente
@@ -416,4 +417,16 @@ class ProfiloView(LoginRequiredMixin,TemplateView):
             'film_al_cinema': film_al_cinema_gruppi,
         })
         return context
+    
+
+# in sostanza view per aggiungere l'immagine del profilo
+class ModificaProfiloView(LoginRequiredMixin, UpdateView):
+    model = ProfiloUtente
+    form_class = ProfiloForm
+    template_name = 'modifica_profilo.html'
+    success_url = reverse_lazy('utenti:profilo')
+
+    def get_object(self):
+        return self.request.user.profiloutente
+
 

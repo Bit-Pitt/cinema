@@ -34,8 +34,9 @@ urlpatterns = [
     path('messaggio/<int:pk>/elimina/', MessaggioDeleteView.as_view(), name='messaggio_delete'),
 
 
-    # View per mostrare il profilo
+    # View per mostrare il profilo / modificare
     path('profilo/', ProfiloView.as_view(), name='profilo'),
+    path('profilo/modifica/', ModificaProfiloView.as_view(), name='modifica_profilo'),
 
 ]
 

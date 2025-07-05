@@ -111,7 +111,10 @@
         <div class="list-group">
             {% for commento in commenti %}
                 <div class="list-group-item bg-secondary text-white mb-2 rounded">
-                    <strong>{{ commento.utente.username }}</strong> - 
+                {% if commento.utente.profiloutente.immagine_profilo %}    <!-- Se l'utente ha imgProfilo la mostriamo-->
+                                    <img src="{{ user.profiloutente.immagine_profilo.url }}" alt="Profilo" class="rounded-circle me-2" width="30" height="30">
+                {% endif %}    
+                                    <strong>{{ commento.utente.username }}</strong> - 
                     <small class="text-muted">{{ commento.data_creazione|date:"d/m/Y H:i" }}</small>
                     <p class="mt-2">{{ commento.testo }}</p>
                 </div>

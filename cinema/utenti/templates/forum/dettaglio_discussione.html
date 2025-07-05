@@ -14,6 +14,9 @@
 <div class="list-group">        <!-- utilizzo di bootstrap per "list-group"-->
     {% for msg in messaggi %}
     <div class="list-group-item bg-secondary text-white mb-2 rounded">
+    {% if msg.utente.profiloutente.immagine_profilo %}  <!-- Se l'utente ha l'immagine profilo la mostriamo-->
+        <img src="{{ user.profiloutente.immagine_profilo.url }}" alt="Profilo" class="rounded-circle me-2" width="30" height="30">  
+    {% endif %}  
         <strong>{{ msg.utente.username }}</strong> ha scritto il {{ msg.data_invio|date:"d/m/Y H:i" }}:<br>
         <p class="mt-2">{{ msg.contenuto }}</p>
     </div>

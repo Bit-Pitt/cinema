@@ -108,7 +108,13 @@ rgb(198, 192, 255)
                                     white
                                 {% endif %} 
                             ">  
-                                <i class="bi bi-person-circle fs-4 me-1"></i> {{ user.username }}
+                               {% if user.profiloutente.immagine_profilo %}
+                                    <img src="{{ user.profiloutente.immagine_profilo.url }}" alt="Profilo" class="rounded-circle me-2" width="30" height="30">
+                                {% else %}
+                                    <i class="bi bi-person-circle fs-4 me-1"></i>
+                                {% endif %}
+                                {{ user.username }}
+
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
@@ -128,6 +134,9 @@ rgb(198, 192, 255)
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="{% url 'utenti:profilo' %}">👤Profilo</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'utenti:modifica_profilo' %}">Aggiungi foto</a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>        <!-- utilizzo del metodo post per sicurezza -->

@@ -22,6 +22,9 @@ class ProfiloUtente(models.Model):
     is_moderatore = models.BooleanField(default=False)
     scadenza_abbonamento = models.DateField(null=True, blank=True)
 
+    #Immagine caricata dall'utente gestita da un campo Django apposito
+    immagine_profilo = models.ImageField(upload_to='immagini_profili/', null=True, blank=True)
+
 
 #Questa classe (tabella nel db) rappresenta i commenti correlati a un film
 class Commento(models.Model):

@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'prenotazioni', 
     'crispy_forms',
     'crispy_bootstrap5',
+    'chat',
+    'channels',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -146,3 +148,16 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+ASGI_APPLICATION = 'cinema.asgi.application'
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    },
+}
+
+

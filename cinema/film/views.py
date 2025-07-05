@@ -279,7 +279,7 @@ def dove_siamo(request):
 
 
 # View per la sezione statistiche, ottiene:
-# Lista di film popolari: [somma normalizzata di valori [0,1] per MediaRating + Rating/TotRating) + commenti/TotCommenti]
+# Lista di film popolari: [somma normalizzata di valori compresi tra [0,1] per MediaRating + Rating/TotRating) + commenti/TotCommenti]
 # Raggruppamento per 3 tramite IterTools (zipLongest)
 def group_film_in_tre(lista):
     """Gruppi di 3 per carousel Bootstrap"""

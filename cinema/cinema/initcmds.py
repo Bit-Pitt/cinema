@@ -392,6 +392,7 @@ def load_forum():
 
 #Crea 5 utenti staff:   staffi {i=0..5} psw: progetto123
 #Crea 5 utenti moderatori  moderatorxi {x1..5}
+# L'assegnazione dei gruppi avviene a posteriori alla fine del file
 def crea_staff():
     for i in range(1, 6):
         username = f"staff{i}"

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Chat Assistenza{% endblock %}
+
+{% block content %}
+<h2 class="text-warning mb-4">Chat di Assistenza Live</h2>
+
+<div class="card p-3" style="background-color: #001f33;">
+    <ul id="chat-log" class="list-unstyled mb-3" style="height: 300px; overflow-y: auto;"></ul>
+    <div class="input-group">
+        <input id="chat-message-input" type="text" class="form-control" placeholder="Scrivi un messaggio...">
+        <button id="chat-message-submit" class="btn btn-warning">Invia</button>
+    </div>
+</div>
+
+<script>
+    const roomName = "supporto";
+    const username = "{{ username }}";      //passato come ctx
+
+    const chatSocket = new WebSocket(
+        'ws://' + window.location.host + '/ws/chat/' + roomName + '/'
+    );
+
+    chatSocket.onmessage = function(e) {
+        console.log("📥 Messaggio dal server:", e.data);
+        const data = JSON.parse(e.data);
+        const chatLog = document.querySelector('#chat-log');
+        const newMsg = document.createElement('li');
+        newMsg.textContent = `${data.user}: ${data.msg}`;
+        chatLog.appendChild(newMsg);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        console.log("EVENTO ON CLICK");
+        const input = document.querySelector('#chat-message-input');
+        const message = input.value;
+        if (message.trim()) {
+            console.log("Invio messaggio:", message);
+            chatSocket.send(JSON.stringify({
+                user: username,
+                msg: message
+            }));
+            input.value = '';
+        }
+    };
+</script>
+
+{% endblock %}

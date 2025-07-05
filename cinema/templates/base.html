@@ -138,6 +138,10 @@ rgb(198, 192, 255)
                                 <li class="nav-item">
                                     <a class="nav-link" href="{% url 'utenti:modifica_profilo' %}">Aggiungi foto</a>
                                 </li>
+                                <li>
+                                    <a class="nav-link" href="{% url 'chat:chat_room' %}">💬 Assistenza Live</a>
+                                </li>
+
                                 <li><hr class="dropdown-divider"></li>
                                 <li>        <!-- utilizzo del metodo post per sicurezza -->
                                 <form method="post" action="{% url 'utenti:logout' %}" style="margin: 0; padding: 0;">

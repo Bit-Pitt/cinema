@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Staff{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">💬 Chat disponibili:</h2>
+
+  {% if users %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      {% for user in users %}
+        <div class="col">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+              <h5 class="card-title">👤 {{ user.username }}</h5>
+              <p class="card-text text-muted">Chat privata con {{ user.username }}</p>
+              <a href="{% url 'chat:staff_chat' %}?room={{ user.username }}" class="btn btn-primary">
+                Apri chat
+              </a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info mt-4" role="alert">
+      Nessun utente ha ancora inviato un messaggio all'assistenza.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

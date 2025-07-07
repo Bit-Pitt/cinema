@@ -66,6 +66,8 @@
                         <li><a class="dropdown-item" href="{% url 'film:proiezione_list_modifica' %}">Modifica proiezione</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{% url 'prenotazioni:prenotazione_list' %}">Gestisci prenotazioni</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'chat:staff_dashboard' %}">Chat di assistenza</a></li>
                     </ul>
                     </li>
                     {% endif %}             <!-- Il resto delle opzioni per tutti-->
@@ -138,10 +140,11 @@ rgb(198, 192, 255)
                                 <li class="nav-item">
                                     <a class="nav-link" href="{% url 'utenti:modifica_profilo' %}">Aggiungi foto</a>
                                 </li>
+                                {% if not request.user.profiloutente.is_moderatore and not user.is_staff %}
                                 <li>
-                                    <a class="nav-link" href="{% url 'chat:chat_room' %}">💬 Assistenza Live</a>
+                                    <a class="nav-link" href="{% url 'chat:user_chat' %}">💬 Assistenza Live</a>
                                 </li>
-
+                                {% endif %}
                                 <li><hr class="dropdown-divider"></li>
                                 <li>        <!-- utilizzo del metodo post per sicurezza -->
                                 <form method="post" action="{% url 'utenti:logout' %}" style="margin: 0; padding: 0;">
